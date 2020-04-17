@@ -132,7 +132,10 @@ namespace SsisBuild.Core.ProjectManagement
             ProtectionLevel = protectionLevel;
 
             var xmlToSave = new XmlDocument();
-            xmlToSave.LoadXml(FileXmlDocument.OuterXml);
+            xmlToSave.LoadXml(FileXmlDocument.OuterXml)
+            {
+                PreserveWhitespace = true
+            };
 
             if (!new []
             {

@@ -14,18 +14,17 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.ProjectManagement;
+
 using System;
 
-namespace SsisBuild.Core.ProjectManagement
+public class InvalidConfigurationNameException : Exception
 {
-    public class InvalidConfigurationNameException : Exception
-    {
-        public string ConfigurationName { get; }
+    public string ConfigurationName { get; }
 
-        public InvalidConfigurationNameException(string configurationName) : base($"Invalid configuration name: {configurationName}")
-        {
-            ConfigurationName = configurationName;
-        }
-        
+    public InvalidConfigurationNameException(string configurationName) : base($"Invalid configuration name: {configurationName}")
+    {
+        ConfigurationName = configurationName;
     }
+
 }

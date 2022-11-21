@@ -14,28 +14,27 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.Tests;
+
 using SsisBuild.Core.ProjectManagement;
 using Xunit;
 
-namespace SsisBuild.Core.Tests
+public class ProjectConnectionTests
 {
-    public class ProjectConnectionTests 
+    [Theory]
+    [InlineData(ProtectionLevel.EncryptSensitiveWithPassword)]
+    [InlineData(ProtectionLevel.EncryptAllWithUserKey)]
+    [InlineData(ProtectionLevel.EncryptSensitiveWithUserKey)]
+    [InlineData(ProtectionLevel.EncryptAllWithPassword)]
+    [InlineData(ProtectionLevel.DontSaveSensitive)]
+    [InlineData(ProtectionLevel.ServerStorage)]
+    public void Pass_ProtectionLevel_ProjectFile(ProtectionLevel protectionLevel)
     {
-        [Theory]
-        [InlineData(ProtectionLevel.EncryptSensitiveWithPassword)]
-        [InlineData(ProtectionLevel.EncryptAllWithUserKey)]
-        [InlineData(ProtectionLevel.EncryptSensitiveWithUserKey)]
-        [InlineData(ProtectionLevel.EncryptAllWithPassword)]
-        [InlineData(ProtectionLevel.DontSaveSensitive)]
-        [InlineData(ProtectionLevel.ServerStorage)]
-        public void Pass_ProtectionLevel_ProjectFile(ProtectionLevel protectionLevel)
-        {
-            // Execute
-            var projectConnection = new ProjectConnection {ProtectionLevel = protectionLevel};
+        // Execute
+        var projectConnection = new ProjectConnection { ProtectionLevel = protectionLevel };
 
-            // Assert
-            Assert.Equal(protectionLevel, projectConnection.ProtectionLevel);
-        }
-        
+        // Assert
+        Assert.Equal(protectionLevel, projectConnection.ProtectionLevel);
     }
+
 }

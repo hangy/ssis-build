@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SsisTool": {
+      "commandName": "Project",
+      "commandLineArgs": "build"
+    }
+  }
+}

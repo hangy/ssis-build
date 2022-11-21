@@ -14,62 +14,61 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.Deployer;
+
+using Microsoft.Data.SqlClient;
+using SsisBuild.Core.Deployer.Sql;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using SsisBuild.Core.Deployer.Sql;
 
-namespace SsisBuild.Core.Deployer
+[ExcludeFromCodeCoverage]
+public class CatalogTools : ICatalogTools
 {
-    [ExcludeFromCodeCoverage]
-    public class CatalogTools : ICatalogTools
+    public void DeployProject(string connectionString, string folderName, string projectName, bool eraseSensitiveInfo, IDictionary<string, SensitiveParameter> parametersToDeploy, MemoryStream projectStream)
     {
-        public void DeployProject(string connectionString, string folderName, string projectName, bool eraseSensitiveInfo, IDictionary<string, SensitiveParameter> parametersToDeploy, MemoryStream projectStream)
+        ExecutionScope.ConnectionString = connectionString;
+
+        try
         {
-            ExecutionScope.ConnectionString = connectionString;
+            CreateFolder.Execute(folderName, null);
+        }
+        catch (SqlException e)
+        {
+            // Ignore if the folder already there
+            if (e.Number != 27190)
+                throw;
+        }
 
-            try
-            {
-                CreateFolder.Execute(folderName, null);
-            }
-            catch (SqlException e)
-            {
-                // Ignore if the folder already there
-                if (e.Number != 27190)
-                    throw;
-            }
+        Sql.DeployProject.Execute(folderName, projectName, projectStream.ToArray(), null);
 
-            Sql.DeployProject.Execute(folderName, projectName, projectStream.ToArray(), null);
-
-            if (eraseSensitiveInfo)
+        if (eraseSensitiveInfo)
+        {
+            foreach (var parameterToDeploy in parametersToDeploy)
             {
-                foreach (var parameterToDeploy in parametersToDeploy)
+                var parameterSplit = parameterToDeploy.Key.Split(new[] { "::" }, StringSplitOptions.None);
+                if (parameterSplit.Length == 2)
                 {
-                    var parameterSplit = parameterToDeploy.Key.Split(new[] { "::" }, StringSplitOptions.None);
-                    if (parameterSplit.Length == 2)
-                    {
-                        var objectType = parameterSplit[0].ToLowerInvariant() == "project" ? ObjectTypes.Project : ObjectTypes.Package;
-                        var value = ConvertToObject(parameterToDeploy.Value.Value, parameterToDeploy.Value.DataType);
-                        SetObjectParameterValue.Execute(
-                            (short)objectType,
-                            folderName,
-                            projectName,
-                            parameterSplit[1],
-                            value,
-                            objectType == ObjectTypes.Project ? parameterSplit[0] : null,
-                            "V");
-                    }
+                    var objectType = parameterSplit[0].ToLowerInvariant() == "project" ? ObjectTypes.Project : ObjectTypes.Package;
+                    var value = ConvertToObject(parameterToDeploy.Value.Value, parameterToDeploy.Value.DataType);
+                    SetObjectParameterValue.Execute(
+                        (short)objectType,
+                        folderName,
+                        projectName,
+                        parameterSplit[1],
+                        value,
+                        objectType == ObjectTypes.Project ? parameterSplit[0] : null,
+                        "V");
                 }
             }
         }
+    }
 
-        private static object ConvertToObject(string value, Type type)
-        {
-            var converter = TypeDescriptor.GetConverter(type);
-            return converter.ConvertFromString(value);
-        }
+    private static object ConvertToObject(string value, Type type)
+    {
+        var converter = TypeDescriptor.GetConverter(type);
+        return converter.ConvertFromString(value);
     }
 }

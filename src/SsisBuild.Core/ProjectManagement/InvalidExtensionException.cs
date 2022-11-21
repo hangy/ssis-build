@@ -14,12 +14,11 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.ProjectManagement;
+
 using System;
 
-namespace SsisBuild.Core.ProjectManagement
+public class InvalidExtensionException : Exception
 {
-    public class InvalidExtensionException : Exception
-    {
-        public InvalidExtensionException(string path, string extension) : base ($"File {path} must have a .{extension} extension.") { }
-    }
+    public InvalidExtensionException(string path, string extension) : base($"File {path} must have a .{extension} extension.") { }
 }

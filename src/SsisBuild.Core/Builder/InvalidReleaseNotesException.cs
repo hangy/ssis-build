@@ -14,16 +14,15 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.Builder;
+
 using System;
 
-namespace SsisBuild.Core.Builder
+public class InvalidReleaseNotesException : Exception
 {
-    public class InvalidReleaseNotesException : Exception
-    {
 
 
-        public InvalidReleaseNotesException(string message) : this(message, null) { }
+    public InvalidReleaseNotesException(string message) : this(message, null) { }
 
-        public InvalidReleaseNotesException(string message, Exception innerException) : base(message, innerException) { }
-    }
+    public InvalidReleaseNotesException(string message, Exception innerException) : base(message, innerException) { }
 }

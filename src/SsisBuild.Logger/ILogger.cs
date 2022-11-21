@@ -14,12 +14,11 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
-namespace SsisBuild.Logger
+namespace SsisBuild.Logger;
+
+public interface ILogger
 {
-    public interface ILogger
-    {
-        void LogMessage(string message);
-        void LogError(string error);
-        void LogWarning(string warning);
-    }
+    void LogMessage(string message);
+    void LogError(string error);
+    void LogWarning(string warning);
 }

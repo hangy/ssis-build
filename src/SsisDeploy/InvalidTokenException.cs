@@ -14,11 +14,10 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
-namespace SsisDeploy
+namespace SsisDeploy;
+
+public class InvalidTokenException : CommandLineParsingException
 {
-    public class InvalidTokenException : CommandLineParsingException
-    {
-        public InvalidTokenException(string token) : base($"Invalid token \"{token}\".")
-        { }
-    }
+    public InvalidTokenException(string token) : base($"Invalid token \"{token}\".")
+    { }
 }

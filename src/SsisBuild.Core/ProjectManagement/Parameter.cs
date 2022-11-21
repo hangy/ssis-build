@@ -14,109 +14,107 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.ProjectManagement;
+
 using System;
 using System.ComponentModel;
-using System.Globalization;
 using System.Xml;
 
-namespace SsisBuild.Core.ProjectManagement
+public abstract class Parameter : IParameter
 {
-    public abstract class Parameter : IParameter
+    public string Name { get; protected set; }
+
+    public string Value
     {
-        public string Name { get; protected set; }
-
-        public string Value
+        get { return _value; }
+        protected set
         {
-            get { return _value; }
-            protected set
-            {
-                if (ParameterDataType == null)
-                    throw new InvalidCastException("Parameter Data Type is not set.");
+            if (ParameterDataType == null)
+                throw new InvalidCastException("Parameter Data Type is not set.");
 
-                if (ParameterDataType != typeof(string) && !string.IsNullOrEmpty(value))
+            if (ParameterDataType != typeof(string) && !string.IsNullOrEmpty(value))
+            {
+                if (ParameterDataType == typeof(DateTime))
                 {
-                    if (ParameterDataType == typeof(DateTime))
+                    try
                     {
-                        try
-                        {
-                            _value = DateTime.Parse(value).ToString("s");
-                        }
-                        catch (Exception e)
-                        {
-                            throw new NotSupportedException($"Conversion to datetime failed for value {value}", e);
-                        }
+                        _value = DateTime.Parse(value).ToString("s");
                     }
-                    else if (ParameterDataType == typeof(bool))
+                    catch (Exception e)
                     {
-                        try
-                        {
-                            _value = Boolean.Parse(value).ToString().ToLowerInvariant();
-                        }
-                        catch (Exception e)
-                        {
-                            throw new NotSupportedException($"Conversion to boolean failed for value {value}", e);
-                        }
+                        throw new NotSupportedException($"Conversion to datetime failed for value {value}", e);
                     }
-                    else
+                }
+                else if (ParameterDataType == typeof(bool))
+                {
+                    try
                     {
-                        _value = TypeDescriptor.GetConverter(ParameterDataType).ConvertFromInvariantString(value)
-                            ?.ToString();
+                        _value = Boolean.Parse(value).ToString().ToLowerInvariant();
+                    }
+                    catch (Exception e)
+                    {
+                        throw new NotSupportedException($"Conversion to boolean failed for value {value}", e);
                     }
                 }
                 else
                 {
-                    _value = value;
+                    _value = TypeDescriptor.GetConverter(ParameterDataType).ConvertFromInvariantString(value)
+                        ?.ToString();
                 }
             }
-        }
-
-        public ParameterSource Source { get; private set; }
-        public bool Sensitive { get; protected set; }
-
-        public Type ParameterDataType { get; protected set; }
-
-        protected XmlElement ValueElement;
-        protected XmlElement ParentElement;
-
-        protected XmlNode ParameterNode;
-        protected string ScopeName;
-        private string _value;
-
-        protected Parameter(string scopeName, XmlNode parameterNode, ParameterSource source)
-        {
-            if (parameterNode == null)
-                throw new ArgumentNullException(nameof(parameterNode));
-
-            Source = source;
-            ParameterNode = parameterNode;
-            ScopeName = scopeName;
-        }
-
-        protected abstract void InitializeFromXml();
-
-        public void SetValue(string value, ParameterSource source)
-        {
-            Value = value;
-            Source = source;
-
-            if (Value == null && ValueElement.ParentNode != null)
-            {
-                ParentElement.RemoveChild(ValueElement);
-            }
-
-            if (Value != null && ValueElement.ParentNode == null)
-            {
-                ParentElement.AppendChild(ValueElement);
-            }
-            if (Value != null)
-                ValueElement.InnerText = Value;
             else
             {
-                foreach (XmlNode childNode in ValueElement.ChildNodes)
-                {
-                    if (childNode.NodeType != XmlNodeType.Attribute)
-                        ValueElement.RemoveChild(childNode);
-                }
+                _value = value;
+            }
+        }
+    }
+
+    public ParameterSource Source { get; private set; }
+    public bool Sensitive { get; protected set; }
+
+    public Type ParameterDataType { get; protected set; }
+
+    protected XmlElement ValueElement;
+    protected XmlElement ParentElement;
+
+    protected XmlNode ParameterNode;
+    protected string ScopeName;
+    private string _value;
+
+    protected Parameter(string scopeName, XmlNode parameterNode, ParameterSource source)
+    {
+        if (parameterNode == null)
+            throw new ArgumentNullException(nameof(parameterNode));
+
+        Source = source;
+        ParameterNode = parameterNode;
+        ScopeName = scopeName;
+    }
+
+    protected abstract void InitializeFromXml();
+
+    public void SetValue(string value, ParameterSource source)
+    {
+        Value = value;
+        Source = source;
+
+        if (Value == null && ValueElement.ParentNode != null)
+        {
+            ParentElement.RemoveChild(ValueElement);
+        }
+
+        if (Value != null && ValueElement.ParentNode == null)
+        {
+            ParentElement.AppendChild(ValueElement);
+        }
+        if (Value != null)
+            ValueElement.InnerText = Value;
+        else
+        {
+            foreach (XmlNode childNode in ValueElement.ChildNodes)
+            {
+                if (childNode.NodeType != XmlNodeType.Attribute)
+                    ValueElement.RemoveChild(childNode);
             }
         }
     }

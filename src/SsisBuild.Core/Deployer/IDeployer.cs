@@ -14,10 +14,9 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
-namespace SsisBuild.Core.Deployer
+namespace SsisBuild.Core.Deployer;
+
+public interface IDeployer
 {
-    public interface IDeployer
-    {
-        void Deploy(IDeployArguments deployArguments);
-    }
+    void Deploy(IDeployArguments deployArguments);
 }

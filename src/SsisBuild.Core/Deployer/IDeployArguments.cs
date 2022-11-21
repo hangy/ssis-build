@@ -14,19 +14,18 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
-namespace SsisBuild.Core.Deployer
+namespace SsisBuild.Core.Deployer;
+
+public interface IDeployArguments
 {
-    public interface IDeployArguments
-    {
-        string WorkingFolder { get; }
-        string DeploymentFilePath { get; }
-        string ServerInstance { get; }
-        string ServerInstanceUserID { get; }
-        string ServerInstancePassword { get; }
-        string Catalog { get; }
-        string Folder { get; }
-        string ProjectName { get; }
-        bool EraseSensitiveInfo { get; }
-        string ProjectPassword { get; }
-    }
+    string WorkingFolder { get; }
+    string DeploymentFilePath { get; }
+    string ServerInstance { get; }
+    string ServerInstanceUserID { get; }
+    string ServerInstancePassword { get; }
+    string Catalog { get; }
+    string Folder { get; }
+    string ProjectName { get; }
+    bool EraseSensitiveInfo { get; }
+    string ProjectPassword { get; }
 }

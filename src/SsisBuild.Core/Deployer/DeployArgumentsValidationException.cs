@@ -14,14 +14,13 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.Deployer;
+
 using System;
 
-namespace SsisBuild.Core.Deployer
+public class DeployArgumentsValidationException : Exception
 {
-    public class DeployArgumentsValidationException : Exception
+    public DeployArgumentsValidationException(string message) : base(message)
     {
-        public DeployArgumentsValidationException(string message) : base (message)
-        {
-        }
     }
 }

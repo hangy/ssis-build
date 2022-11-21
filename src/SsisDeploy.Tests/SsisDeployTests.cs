@@ -14,145 +14,144 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
-using System;
-using System.IO;
+namespace SsisDeploy.Tests;
+
 using Moq;
 using SsisBuild.Core.Deployer;
 using SsisBuild.Tests.Helpers;
+using System;
+using System.IO;
 using Xunit;
 
-namespace SsisDeploy.Tests
+public class SsisDeployTests
 {
-    public class SsisDeployTests
+    private readonly Mock<IDeployer> _deployerMock;
+
+    public SsisDeployTests()
     {
-        private readonly Mock<IDeployer> _deployerMock;
+        _deployerMock = new Mock<IDeployer>();
+    }
 
-        public SsisDeployTests()
+    [Fact]
+    public void Pass_MainInternal()
+    {
+        // Setup
+        var args = new[]
         {
-            _deployerMock = new Mock<IDeployer>();
-        }
+            Fakes.RandomString(),
+            $"-{nameof(DeployArguments.ServerInstance)}", Fakes.RandomString(),
+            $"-{nameof(DeployArguments.Catalog)}", Fakes.RandomString(),
+            $"-{nameof(DeployArguments.ProjectName)}", Fakes.RandomString(),
+            $"-{nameof(DeployArguments.Folder)}", Fakes.RandomString(),
+            $"-{nameof(DeployArguments.ProjectPassword)}", Fakes.RandomString(),
+            $"-{nameof(DeployArguments.EraseSensitiveInfo)}"
+        };
 
-        [Fact]
-        public void Pass_MainInternal()
+        IDeployArguments deployArguments = null;
+        _deployerMock.Setup(d => d.Deploy(It.IsAny<IDeployArguments>())).Callback((IDeployArguments da) => deployArguments = da);
+
+        // Execute
+        Program.MainInternal(_deployerMock.Object, args);
+
+        // Assert
+        Assert.NotNull(deployArguments);
+        Assert.Equal(Environment.CurrentDirectory, deployArguments.WorkingFolder);
+        Assert.Equal(args[0], deployArguments.DeploymentFilePath);
+        Assert.Equal(args[2], deployArguments.ServerInstance);
+        Assert.Equal(args[4], deployArguments.Catalog);
+        Assert.Equal(args[6], deployArguments.ProjectName);
+        Assert.Equal(args[8], deployArguments.Folder);
+        Assert.Equal(args[10], deployArguments.ProjectPassword);
+        Assert.True(deployArguments.EraseSensitiveInfo);
+    }
+
+    [Fact]
+    public void Fail_MainInternal_InvalidTokenException()
+    {
+        // Setup
+        var stdOut = Console.Out;
+        var consoleOutput = new StringWriter();
+        Console.SetOut(consoleOutput);
+
+        // Execute
+        var exception = Record.Exception(() => Program.MainInternal(_deployerMock.Object, new[]
         {
-            // Setup
-            var args = new[]
-            {
-                Fakes.RandomString(),
-                $"-{nameof(DeployArguments.ServerInstance)}", Fakes.RandomString(),
-                $"-{nameof(DeployArguments.Catalog)}", Fakes.RandomString(),
-                $"-{nameof(DeployArguments.ProjectName)}", Fakes.RandomString(),
-                $"-{nameof(DeployArguments.Folder)}", Fakes.RandomString(),
-                $"-{nameof(DeployArguments.ProjectPassword)}", Fakes.RandomString(),
-                $"-{nameof(DeployArguments.EraseSensitiveInfo)}"
-            };
+            $"-{Fakes.RandomString()}", Fakes.RandomString(),
+            $"-{nameof(DeployArguments.ServerInstance)}", Fakes.RandomString(),
+            $"-{nameof(DeployArguments.Catalog)}", Fakes.RandomString(),
+            $"-{nameof(DeployArguments.ProjectName)}", Fakes.RandomString(),
+            $"-{nameof(DeployArguments.Folder)}", Fakes.RandomString(),
+        }));
 
-            IDeployArguments deployArguments = null;
-            _deployerMock.Setup(d => d.Deploy(It.IsAny<IDeployArguments>())).Callback((IDeployArguments da) => deployArguments = da);
+        Console.SetOut(stdOut);
 
-            // Execute
-            Program.MainInternal(_deployerMock.Object, args);
+        // Assert
+        Assert.NotNull(exception);
+        Assert.IsType<InvalidTokenException>(exception);
+        Assert.Contains("usage", consoleOutput.ToString().ToLowerInvariant());
+    }
 
-            // Assert
-            Assert.NotNull(deployArguments);
-            Assert.Equal(Environment.CurrentDirectory, deployArguments.WorkingFolder);
-            Assert.Equal(args[0], deployArguments.DeploymentFilePath);
-            Assert.Equal(args[2], deployArguments.ServerInstance);
-            Assert.Equal(args[4], deployArguments.Catalog);
-            Assert.Equal(args[6], deployArguments.ProjectName);
-            Assert.Equal(args[8], deployArguments.Folder);
-            Assert.Equal(args[10], deployArguments.ProjectPassword);
-            Assert.True(deployArguments.EraseSensitiveInfo);
-        }
+    [Fact]
+    public void Fail_MainInternal_InvalidTokenException_NoDash()
+    {
+        // Setup
+        var stdOut = Console.Out;
+        var consoleOutput = new StringWriter();
+        Console.SetOut(consoleOutput);
 
-        [Fact]
-        public void Fail_MainInternal_InvalidTokenException()
+        // Execute
+        var exception = Record.Exception(() => Program.MainInternal(_deployerMock.Object, new[]
         {
-            // Setup
-            var stdOut = Console.Out;
-            var consoleOutput = new StringWriter();
-            Console.SetOut(consoleOutput);
+            $"{Fakes.RandomString()}", Fakes.RandomString(),
+            $"-{nameof(DeployArguments.ServerInstance)}", Fakes.RandomString(),
+            $"-{nameof(DeployArguments.Catalog)}", Fakes.RandomString(),
+            $"-{nameof(DeployArguments.ProjectName)}", Fakes.RandomString(),
+            $"-{nameof(DeployArguments.Folder)}", Fakes.RandomString(),
+        }));
 
-            // Execute
-            var exception = Record.Exception(() => Program.MainInternal(_deployerMock.Object, new[]
-            {
-                $"-{Fakes.RandomString()}", Fakes.RandomString(),
-                $"-{nameof(DeployArguments.ServerInstance)}", Fakes.RandomString(),
-                $"-{nameof(DeployArguments.Catalog)}", Fakes.RandomString(),
-                $"-{nameof(DeployArguments.ProjectName)}", Fakes.RandomString(),
-                $"-{nameof(DeployArguments.Folder)}", Fakes.RandomString(),
-            }));
+        Console.SetOut(stdOut);
 
-            Console.SetOut(stdOut);
+        // Assert
+        Assert.NotNull(exception);
+        Assert.IsType<InvalidTokenException>(exception);
+        Assert.Contains("usage", consoleOutput.ToString().ToLowerInvariant());
+    }
 
-            // Assert
-            Assert.NotNull(exception);
-            Assert.IsType<InvalidTokenException>(exception);
-            Assert.True(consoleOutput.ToString().ToLowerInvariant().Contains("usage"));
-        }
+    [Fact]
+    public void Fail_MainInternal_MissingRequiredArgumentException()
+    {
+        // Setup
+        var stdOut = Console.Out;
+        var consoleOutput = new StringWriter();
+        Console.SetOut(consoleOutput);
 
-        [Fact]
-        public void Fail_MainInternal_InvalidTokenException_NoDash()
+        // Execute
+        var exception = Record.Exception(() => Program.MainInternal(_deployerMock.Object, new[]
         {
-            // Setup
-            var stdOut = Console.Out;
-            var consoleOutput = new StringWriter();
-            Console.SetOut(consoleOutput);
+            $"-{nameof(DeployArguments.Catalog)}", Fakes.RandomString(),
+            $"-{nameof(DeployArguments.ProjectName)}", Fakes.RandomString(),
+            $"-{nameof(DeployArguments.Folder)}", Fakes.RandomString(),
+        }));
 
-            // Execute
-            var exception = Record.Exception(() => Program.MainInternal(_deployerMock.Object, new[]
-            {
-                $"{Fakes.RandomString()}", Fakes.RandomString(),
-                $"-{nameof(DeployArguments.ServerInstance)}", Fakes.RandomString(),
-                $"-{nameof(DeployArguments.Catalog)}", Fakes.RandomString(),
-                $"-{nameof(DeployArguments.ProjectName)}", Fakes.RandomString(),
-                $"-{nameof(DeployArguments.Folder)}", Fakes.RandomString(),
-            }));
+        Console.SetOut(stdOut);
 
-            Console.SetOut(stdOut);
+        // Assert
+        Assert.NotNull(exception);
+        Assert.IsType<MissingRequiredArgumentException>(exception);
+        Assert.Contains(new MissingRequiredArgumentException(nameof(DeployArguments.ServerInstance)).Message, consoleOutput.ToString());
+        Assert.Contains("usage", consoleOutput.ToString().ToLowerInvariant());
+    }
 
-            // Assert
-            Assert.NotNull(exception);
-            Assert.IsType<InvalidTokenException>(exception);
-            Assert.True(consoleOutput.ToString().ToLowerInvariant().Contains("usage"));
-        }
+    [Fact]
+    public void Fail_ProcessArgs_NullArgs()
+    {
+        //Setup
+        // Execute
+        var exception = Record.Exception(() => Program.MainInternal(_deployerMock.Object, null));
 
-        [Fact]
-        public void Fail_MainInternal_MissingRequiredArgumentException()
-        {
-            // Setup
-            var stdOut = Console.Out;
-            var consoleOutput = new StringWriter();
-            Console.SetOut(consoleOutput);
+        // Assert
+        Assert.NotNull(exception);
+        Assert.IsType<NullReferenceException>(exception);
 
-            // Execute
-            var exception = Record.Exception(() => Program.MainInternal(_deployerMock.Object, new[]
-            {
-                $"-{nameof(DeployArguments.Catalog)}", Fakes.RandomString(),
-                $"-{nameof(DeployArguments.ProjectName)}", Fakes.RandomString(),
-                $"-{nameof(DeployArguments.Folder)}", Fakes.RandomString(),
-            }));
-
-            Console.SetOut(stdOut);
-
-            // Assert
-            Assert.NotNull(exception);
-            Assert.IsType<MissingRequiredArgumentException>(exception);
-            Assert.True(consoleOutput.ToString().Contains(new MissingRequiredArgumentException(nameof(DeployArguments.ServerInstance)).Message));
-            Assert.True(consoleOutput.ToString().ToLowerInvariant().Contains("usage"));
-        }
-
-        [Fact]
-        public void Fail_ProcessArgs_NullArgs()
-        {
-            //Setup
-            // Execute
-            var exception = Record.Exception(() => Program.MainInternal(_deployerMock.Object, null));
-
-            // Assert
-            Assert.NotNull(exception);
-            Assert.IsType<NullReferenceException>(exception);
-
-        }
     }
 }

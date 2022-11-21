@@ -14,111 +14,110 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.Builder;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace SsisBuild.Core.Builder
+internal enum ReleaseNotesType
 {
-    internal enum ReleaseNotesType
+    Simple,
+    Complex,
+    Invalid
+}
+
+public static class ReleaseNotesHelper
+{
+    public static ReleaseNotes ParseReleaseNotes(string releaseNotesFilePath)
     {
-        Simple,
-        Complex,
-        Invalid
+        var releaseNoteLines = ReadLatestReleaseNotes(releaseNotesFilePath);
+        var noteLines = releaseNoteLines as string[] ?? releaseNoteLines.ToArray();
+        if (noteLines.Length == 0)
+            throw new InvalidReleaseNotesException("Empty release notes file.");
+
+        var notesType = GetReleaseNotesType(noteLines[0]);
+
+        if (notesType == ReleaseNotesType.Invalid)
+            throw new InvalidReleaseNotesException("Ivalid release notes content");
+
+        if (notesType == ReleaseNotesType.Simple)
+            return ProcessSimpleNotes(noteLines[0]);
+
+        return ProcessComplexNotes(noteLines);
     }
 
-    public static class ReleaseNotesHelper
+    private static ReleaseNotes ProcessComplexNotes(string[] noteLines)
     {
-        public static ReleaseNotes ParseReleaseNotes(string releaseNotesFilePath)
+        return new ReleaseNotes()
         {
-            var releaseNoteLines = ReadLatestReleaseNotes(releaseNotesFilePath);
-            var noteLines = releaseNoteLines as string[] ?? releaseNoteLines.ToArray();
-            if (noteLines.Length == 0)
-                throw new InvalidReleaseNotesException("Empty release notes file.");
+            Version = ParseVersion(noteLines[0]),
+            Notes = noteLines.Where(nl => !nl.StartsWith("##")).Select(nl => nl.Trim(' ', '*')).ToList()
+        };
+    }
 
-            var notesType = GetReleaseNotesType(noteLines[0]);
+    private static ReleaseNotes ProcessSimpleNotes(string noteLine)
+    {
+        var notesLineSplit = noteLine.Split(new[] { '-' }, 2);
 
-            if (notesType == ReleaseNotesType.Invalid)
-                throw new InvalidReleaseNotesException("Ivalid release notes content");
 
-            if (notesType == ReleaseNotesType.Simple)
-                return ProcessSimpleNotes(noteLines[0]);
+        return new ReleaseNotes()
+        {
+            Version = ParseVersion(noteLine),
+            Notes = new List<string>(notesLineSplit.Length > 1 ? new[] { notesLineSplit[1].Trim() } : new string[] { })
+        };
+    }
 
-            return ProcessComplexNotes(noteLines);
+
+    private static ReleaseNotesType GetReleaseNotesType(string firstLine)
+    {
+        if (firstLine.StartsWith("*"))
+            return ReleaseNotesType.Simple;
+
+        if (firstLine.StartsWith("##"))
+            return ReleaseNotesType.Complex;
+
+        return ReleaseNotesType.Invalid;
+    }
+
+
+    private static IEnumerable<string> ReadLatestReleaseNotes(string releaseNotesFilePath)
+    {
+        var notes = File.ReadAllLines(releaseNotesFilePath);
+
+        if (notes.Length == 0)
+            yield break;
+
+        var notesType = GetReleaseNotesType(notes[0]);
+
+        switch (notesType)
+        {
+            case ReleaseNotesType.Invalid:
+            case ReleaseNotesType.Simple:
+                yield return notes[0];
+                break;
         }
 
-        private static ReleaseNotes ProcessComplexNotes(string[] noteLines)
+        foreach (var note in notes)
         {
-            return new ReleaseNotes()
-            {
-                Version = ParseVersion(noteLines[0]),
-                Notes = noteLines.Where(nl => !nl.StartsWith("##")).Select(nl => nl.Trim(' ', '*')).ToList()
-            };
+            if (string.IsNullOrWhiteSpace(note))
+                break;
+
+            yield return note;
         }
+    }
 
-        private static ReleaseNotes ProcessSimpleNotes(string noteLine)
-        {
-            var notesLineSplit = noteLine.Split(new[] {'-'}, 2);
+    private static Version ParseVersion(string input)
+    {
+        var regex = new Regex(@"[0-9]+\.[0-9]+\.[0-9]+");
 
+        var match = regex.Match(input);
 
-            return new ReleaseNotes()
-            {
-                Version = ParseVersion(noteLine),
-                Notes = new List<string>(notesLineSplit.Length > 1 ? new[] {notesLineSplit[1].Trim()} : new string[] {})
-            };
-        }
+        if (match.Success)
+            return Version.Parse(match.Value);
 
-
-        private static ReleaseNotesType GetReleaseNotesType(string firstLine)
-        {
-            if (firstLine.StartsWith("*"))
-                return ReleaseNotesType.Simple;
-
-            if (firstLine.StartsWith("##"))
-                return ReleaseNotesType.Complex;
-
-            return ReleaseNotesType.Invalid;
-        }
-
-
-        private static IEnumerable<string> ReadLatestReleaseNotes(string releaseNotesFilePath)
-        {
-            var notes = File.ReadAllLines(releaseNotesFilePath);
-
-            if (notes.Length == 0)
-                yield break;
-
-            var notesType = GetReleaseNotesType(notes[0]);
-
-            switch (notesType)
-            {
-                case ReleaseNotesType.Invalid:
-                case ReleaseNotesType.Simple:
-                    yield return notes[0];
-                    break;
-            }
-
-            foreach (var note in notes)
-            {
-                if (string.IsNullOrWhiteSpace(note))
-                    break;
-
-                yield return note;
-            }
-        }
-
-        private static Version ParseVersion(string input)
-        {
-            var regex = new Regex(@"[0-9]+\.[0-9]+\.[0-9]+");
-
-            var match = regex.Match(input);
-
-            if (match.Success)
-                return Version.Parse(match.Value);
-
-            throw new InvalidReleaseNotesException($"No version found in string: {input}.");
-        }
+        throw new InvalidReleaseNotesException($"No version found in string: {input}.");
     }
 }

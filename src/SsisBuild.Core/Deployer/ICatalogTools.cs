@@ -14,14 +14,13 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.Deployer;
+
 using System.Collections.Generic;
 using System.IO;
 
-namespace SsisBuild.Core.Deployer
+public interface ICatalogTools
 {
-    public interface ICatalogTools
-    {
-        void DeployProject(string connectionString, string folderName, string projectName, bool eraseSensitiveInfo, IDictionary<string, SensitiveParameter> parametersToDeploy, MemoryStream projectStream);
+    void DeployProject(string connectionString, string folderName, string projectName, bool eraseSensitiveInfo, IDictionary<string, SensitiveParameter> parametersToDeploy, MemoryStream projectStream);
 
-    }
 }

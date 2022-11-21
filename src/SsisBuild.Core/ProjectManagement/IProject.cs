@@ -14,27 +14,26 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.ProjectManagement;
+
 using System.Collections.Generic;
 using System.IO;
 
-namespace SsisBuild.Core.ProjectManagement
+public interface IProject
 {
-    public interface IProject
-    {
-        ProtectionLevel ProtectionLevel { get; }
-        int VersionMajor { get; set; }
-        int VersionMinor { get; set; }
-        int VersionBuild { get; set; }
-        string VersionComments { get; set; }
-        string Description { get; set; }
-        IReadOnlyDictionary<string, IParameter> Parameters { get; }
+    ProtectionLevel ProtectionLevel { get; }
+    int VersionMajor { get; set; }
+    int VersionMinor { get; set; }
+    int VersionBuild { get; set; }
+    string VersionComments { get; set; }
+    string Description { get; set; }
+    IReadOnlyDictionary<string, IParameter> Parameters { get; }
 
 
-        void LoadFromIspac(string filePath, string password);
-        void LoadFromDtproj(string filePath, string configurationName, string password);
-        void Save(Stream destinationStream, ProtectionLevel protectionLevel, string password);
-        void Save(string destinationFilePath);
-        void Save(string destinationFilePath, ProtectionLevel protectionLevel, string password);
-        void UpdateParameter(string parameterName, string value, ParameterSource source);
-    }
+    void LoadFromIspac(string filePath, string password);
+    void LoadFromDtproj(string filePath, string configurationName, string password);
+    void Save(Stream destinationStream, ProtectionLevel protectionLevel, string password);
+    void Save(string destinationFilePath);
+    void Save(string destinationFilePath, ProtectionLevel protectionLevel, string password);
+    void UpdateParameter(string parameterName, string value, ParameterSource source);
 }

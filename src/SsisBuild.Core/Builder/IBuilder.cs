@@ -14,10 +14,9 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
-namespace SsisBuild.Core.Builder
+namespace SsisBuild.Core.Builder;
+
+public interface IBuilder
 {
-    public interface IBuilder
-    {
-        void Build(IBuildArguments buildArguments);
-    }
+    void Build(IBuildArguments buildArguments);
 }

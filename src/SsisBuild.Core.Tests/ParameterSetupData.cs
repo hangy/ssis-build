@@ -14,15 +14,14 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.Tests;
+
 using SsisBuild.Core.ProjectManagement;
 
-namespace SsisBuild.Core.Tests
+public class ParameterSetupData
 {
-    public class ParameterSetupData
-    {
-        public string Name { get; set; }
-        public string Value { get; set; }
-        public bool Sensitive { get; set; }
-        public DataType DataType { get; set; }
-    }
+    public string Name { get; set; }
+    public string Value { get; set; }
+    public bool Sensitive { get; set; }
+    public DataType DataType { get; set; }
 }

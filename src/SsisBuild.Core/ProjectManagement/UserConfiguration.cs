@@ -14,46 +14,45 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.ProjectManagement;
+
 using System.Collections.Generic;
 using System.Xml;
 
-namespace SsisBuild.Core.ProjectManagement
+public class UserConfiguration : ProjectFile
 {
-    public class UserConfiguration : ProjectFile
+    private readonly string _configurationName;
+
+    public UserConfiguration(string configurationName)
     {
-        private readonly string _configurationName;
+        _configurationName = configurationName;
+    }
 
-        public UserConfiguration(string configurationName)
-        {
-            _configurationName = configurationName;
-        }
+    protected override IList<IParameter> ExtractParameters()
+    {
+        var parameters = new List<IParameter>();
 
-        protected override IList<IParameter> ExtractParameters()
-        {
-            var parameters = new List<IParameter>();
+        var configurationNode = FileXmlDocument.SelectSingleNode(
+            $"/DataTransformationsUserConfiguration/Configurations/Configuration[Name=\"{_configurationName}\"]", NamespaceManager);
 
-            var configurationNode = FileXmlDocument.SelectSingleNode(
-                $"/DataTransformationsUserConfiguration/Configurations/Configuration[Name=\"{_configurationName}\"]", NamespaceManager);
+        if (configurationNode == null)
+            throw new InvalidConfigurationNameException(_configurationName);
 
-            if (configurationNode == null)
-                throw new InvalidConfigurationNameException(_configurationName);
+        var parameterNodes =
+            configurationNode.SelectNodes(
+                $"./Options/ParameterConfigurationSensitiveValues/ConfigurationSetting",
+                NamespaceManager);
 
-            var parameterNodes =
-                configurationNode.SelectNodes(
-                    $"./Options/ParameterConfigurationSensitiveValues/ConfigurationSetting",
-                    NamespaceManager);
-
-            if (parameterNodes == null || parameterNodes.Count == 0)
-                return parameters;
-
-            foreach (XmlNode parameterNode in parameterNodes)
-            {
-                var parameter = new ConfigurationParameter(parameterNode, true);
-                if (parameter.Name != null)
-                    parameters.Add(parameter);
-            }
-
+        if (parameterNodes == null || parameterNodes.Count == 0)
             return parameters;
+
+        foreach (XmlNode parameterNode in parameterNodes)
+        {
+            var parameter = new ConfigurationParameter(parameterNode, true);
+            if (parameter.Name != null)
+                parameters.Add(parameter);
         }
+
+        return parameters;
     }
 }

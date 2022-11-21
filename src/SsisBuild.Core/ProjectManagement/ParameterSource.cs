@@ -14,12 +14,11 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
-namespace SsisBuild.Core.ProjectManagement
+namespace SsisBuild.Core.ProjectManagement;
+
+public enum ParameterSource
 {
-    public enum ParameterSource
-    {
-        Original,
-        Configuration,
-        Manual
-    }
+    Original,
+    Configuration,
+    Manual
 }

@@ -14,20 +14,19 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
-namespace SsisBuild
+namespace SsisBuild;
+
+/// <summary>
+/// An exception class which is raised when a command line argument is not recognized. 
+/// Derives from <see cref="CommandLineParsingException"/> class.
+/// </summary>
+public class InvalidTokenException : CommandLineParsingException
 {
     /// <summary>
-    /// An exception class which is raised when a command line argument is not recognized. 
-    /// Derives from <see cref="CommandLineParsingException"/> class.
+    /// Constructor for <see cref="InvalidTokenException"/> class. 
     /// </summary>
-    public class InvalidTokenException : CommandLineParsingException
+    /// <param name="token">Name of an invalid token.</param>
+    public InvalidTokenException(string token) : base($"Invalid token \"{token}\".")
     {
-        /// <summary>
-        /// Constructor for <see cref="InvalidTokenException"/> class. 
-        /// </summary>
-        /// <param name="token">Name of an invalid token.</param>
-        public InvalidTokenException(string token) : base($"Invalid token \"{token}\".")
-        {
-        }
     }
 }

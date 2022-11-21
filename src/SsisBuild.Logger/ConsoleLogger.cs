@@ -14,25 +14,24 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Logger;
+
 using System;
 
-namespace SsisBuild.Logger
+public class ConsoleLogger : ILogger
 {
-    public class ConsoleLogger : ILogger
+    public void LogMessage(string message)
     {
-        public void LogMessage(string message)
-        {
-            Console.WriteLine(message);
-        }
+        Console.WriteLine(message);
+    }
 
-        public void LogError(string error)
-        {
-            Console.WriteLine($"ERROR>>>>{error}");
-        }
+    public void LogError(string error)
+    {
+        Console.WriteLine($"ERROR>>>>{error}");
+    }
 
-        public void LogWarning(string warning)
-        {
-            Console.WriteLine($"WARNING>>>>{warning}");
-        }
+    public void LogWarning(string warning)
+    {
+        Console.WriteLine($"WARNING>>>>{warning}");
     }
 }

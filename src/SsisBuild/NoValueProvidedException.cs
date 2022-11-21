@@ -14,22 +14,21 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
-namespace SsisBuild
+namespace SsisBuild;
+
+/// <summary>
+/// An exception class which is raised when a command line argument does not have a corresponding value. 
+/// Derives from <see cref="CommandLineParsingException"/> class.
+/// Example: ssisbuild.exe -Configuration.
+/// Since the value for -Configuration argument is missing, this exception will be thrown.
+/// </summary>
+public class NoValueProvidedException : CommandLineParsingException
 {
     /// <summary>
-    /// An exception class which is raised when a command line argument does not have a corresponding value. 
-    /// Derives from <see cref="CommandLineParsingException"/> class.
-    /// Example: ssisbuild.exe -Configuration.
-    /// Since the value for -Configuration argument is missing, this exception will be thrown.
+    /// Constructor for <see cref="NoValueProvidedException"/> class.
     /// </summary>
-    public class NoValueProvidedException : CommandLineParsingException
+    /// <param name="argumentName">Name of an argument which value is not provided.</param>
+    public NoValueProvidedException(string argumentName) : base($"No value provided for an argument {argumentName}.")
     {
-        /// <summary>
-        /// Constructor for <see cref="NoValueProvidedException"/> class.
-        /// </summary>
-        /// <param name="argumentName">Name of an argument which value is not provided.</param>
-        public NoValueProvidedException(string argumentName) : base($"No value provided for an argument {argumentName}.")
-        {
-        }
     }
 }

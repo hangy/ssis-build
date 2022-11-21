@@ -14,11 +14,10 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
-namespace SsisBuild.Core.Deployer
+namespace SsisBuild.Core.Deployer;
+
+public enum ObjectTypes : short
 {
-    public enum ObjectTypes : short
-    {
-        Project = 20,
-        Package = 30
-    }
+    Project = 20,
+    Package = 30
 }

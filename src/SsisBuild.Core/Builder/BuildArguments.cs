@@ -14,61 +14,60 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.Builder;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SsisBuild.Core.Builder 
+public sealed class BuildArguments : IBuildArguments
 {
-    public sealed class BuildArguments : IBuildArguments
+    public string WorkingFolder { get; }
+    public string ProjectPath { get; }
+    public string OutputFolder { get; }
+    public string ProtectionLevel { get; }
+    public string Password { get; }
+    public string NewPassword { get; }
+    public string Configuration { get; }
+    public string ReleaseNotes { get; }
+    public IDictionary<string, string> Parameters { get; }
+
+    public BuildArguments(
+        string workingFolder,
+        string projectPath,
+        string outputFolder,
+        string protectionLevel,
+        string password,
+        string newPassword,
+        string configuration,
+        string releaseNotes,
+        IDictionary<string, string> parameters
+    )
     {
-        public string WorkingFolder { get; }
-        public string ProjectPath { get; }
-        public string OutputFolder { get; }
-        public string ProtectionLevel { get; }
-        public string Password { get; }
-        public string NewPassword { get; }
-        public string Configuration { get; }
-        public string ReleaseNotes { get; }
-        public IDictionary<string, string> Parameters { get; }
+        WorkingFolder = workingFolder;
+        ProjectPath = projectPath;
+        OutputFolder = outputFolder;
+        ProtectionLevel = protectionLevel;
+        Password = password;
+        NewPassword = newPassword;
+        Configuration = configuration;
+        ReleaseNotes = releaseNotes;
+        Parameters = parameters ?? new Dictionary<string, string>();
 
-        public BuildArguments(
-            string workingFolder, 
-            string projectPath, 
-            string outputFolder, 
-            string protectionLevel, 
-            string password,
-            string newPassword, 
-            string configuration, 
-            string releaseNotes, 
-            IDictionary<string, string> parameters
-        )
+        Validate();
+    }
+
+    private void Validate()
+    {
+        if (ProtectionLevel != null && !(new[]
         {
-            WorkingFolder = workingFolder;
-            ProjectPath = projectPath;
-            OutputFolder = outputFolder;
-            ProtectionLevel = protectionLevel;
-            Password = password;
-            NewPassword = newPassword;
-            Configuration = configuration;
-            ReleaseNotes = releaseNotes;
-            Parameters = parameters ?? new Dictionary<string, string>();
+            nameof(ProjectManagement.ProtectionLevel.DontSaveSensitive),
+            nameof(ProjectManagement.ProtectionLevel.EncryptAllWithPassword),
+            nameof(ProjectManagement.ProtectionLevel.EncryptSensitiveWithPassword)
+        }.Contains(ProtectionLevel ?? string.Empty, StringComparer.InvariantCultureIgnoreCase)))
+            throw new InvalidArgumentException(nameof(ProtectionLevel), ProtectionLevel);
 
-            Validate();
-        }
-
-        private void Validate()
-        {
-            if (ProtectionLevel != null && !(new[]
-            {
-                nameof(ProjectManagement.ProtectionLevel.DontSaveSensitive),
-                nameof(ProjectManagement.ProtectionLevel.EncryptAllWithPassword),
-                nameof(ProjectManagement.ProtectionLevel.EncryptSensitiveWithPassword)
-            }.Contains(ProtectionLevel ?? string.Empty, StringComparer.InvariantCultureIgnoreCase)))
-                throw new InvalidArgumentException(nameof(ProtectionLevel), ProtectionLevel);
-
-            if (Configuration == null)
-                throw new MissingRequiredArgumentException(nameof(Configuration));
-        }
+        if (Configuration == null)
+            throw new MissingRequiredArgumentException(nameof(Configuration));
     }
 }

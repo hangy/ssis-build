@@ -14,100 +14,98 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.ProjectManagement;
+
+using SsisBuild.Core.ProjectManagement.Helpers;
 using System;
 using System.Xml;
-using SsisBuild.Core.ProjectManagement.Helpers;
 
-namespace SsisBuild.Core.ProjectManagement
+public sealed class ConfigurationParameter : Parameter
 {
-    public sealed class ConfigurationParameter : Parameter
+    public ConfigurationParameter(XmlNode parameterNode, bool sensitive) : base(null, parameterNode, ParameterSource.Configuration)
     {
-        public ConfigurationParameter(XmlNode parameterNode, bool sensitive) : base(null, parameterNode, ParameterSource.Configuration)
+        Sensitive = sensitive;
+        InitializeFromXml();
+    }
+
+    protected override void InitializeFromXml()
+    {
+        var namespaceManager = ParameterNode.GetNameSpaceManager();
+
+        var id = ParameterNode.SelectSingleNode("./Id", namespaceManager);
+        if (id != null)
         {
-            Sensitive = sensitive;
-            InitializeFromXml();
-        }
-
-        protected override void InitializeFromXml()
-        {
-            var namespaceManager = ParameterNode.GetNameSpaceManager();
-
-            var id = ParameterNode.SelectSingleNode("./Id", namespaceManager);
-            if (id != null)
+            if (Guid.TryParse(id.InnerText, out var testId))
             {
-                Guid testId;
-                if (Guid.TryParse(id.InnerText, out testId))
-                {
-                    var name = ParameterNode.SelectSingleNode("./Name", namespaceManager)?.InnerText;
-                    if (name == null)
-                        throw new InvalidXmlException("Name element is missing", ParameterNode);
+                var name = ParameterNode.SelectSingleNode("./Name", namespaceManager)?.InnerText;
+                if (name == null)
+                    throw new InvalidXmlException("Name element is missing", ParameterNode);
 
-                    var valueNode = ParameterNode.SelectSingleNode("./Value", namespaceManager);
-                    var value = valueNode?.InnerText;
+                var valueNode = ParameterNode.SelectSingleNode("./Value", namespaceManager);
+                var value = valueNode?.InnerText;
 
-                    // Don't store encrypted string
-                    if (Sensitive)
-                        value = null;
+                // Don't store encrypted string
+                if (Sensitive)
+                    value = null;
 
-                    Name = name;
-                    ParameterDataType = ExtractDataType();
-                    Value = value;
-                }
-            }
-            else
-            {
-                throw new InvalidXmlException("Id element is missing", ParameterNode);
+                Name = name;
+                ParameterDataType = ExtractDataType();
+                Value = value;
             }
         }
-
-        private Type ExtractDataType()
+        else
         {
-            var dataType = ParameterNode.SelectSingleNode("./Value", ParameterNode.GetNameSpaceManager())?.Attributes?["xsi:type"]?.Value;
+            throw new InvalidXmlException("Id element is missing", ParameterNode);
+        }
+    }
 
-            switch (dataType)
-            {
-                case "xsd:boolean":
-                    return typeof(bool);
+    private Type ExtractDataType()
+    {
+        var dataType = ParameterNode.SelectSingleNode("./Value", ParameterNode.GetNameSpaceManager())?.Attributes?["xsi:type"]?.Value;
 
-                case "xsd:unsignedByte":
-                    return typeof(byte);
+        switch (dataType)
+        {
+            case "xsd:boolean":
+                return typeof(bool);
 
-                case "xsd:dateTime":
-                    return typeof(DateTime);
+            case "xsd:unsignedByte":
+                return typeof(byte);
 
-                case "xsd:decimal":
-                    return typeof(decimal);
+            case "xsd:dateTime":
+                return typeof(DateTime);
 
-                case "xsd:double":
-                    return typeof(double);
+            case "xsd:decimal":
+                return typeof(decimal);
 
-                case "xsd:short":
-                    return typeof(short);
+            case "xsd:double":
+                return typeof(double);
 
-                case "xsd:int":
-                    return typeof(int);
+            case "xsd:short":
+                return typeof(short);
 
-                case "xsd:long":
-                    return typeof(long);
+            case "xsd:int":
+                return typeof(int);
 
-                case "xsd:byte":
-                    return typeof(sbyte);
+            case "xsd:long":
+                return typeof(long);
 
-                case "xsd:float":
-                    return typeof(float);
+            case "xsd:byte":
+                return typeof(sbyte);
 
-                case "xsd:string":
-                    return typeof(string);
+            case "xsd:float":
+                return typeof(float);
 
-                case "xsd:unsignedInt":
-                    return typeof(uint);
+            case "xsd:string":
+                return typeof(string);
 
-                case "xsd:unsignedLong":
-                    return typeof(ulong);
+            case "xsd:unsignedInt":
+                return typeof(uint);
 
-                default:
-                    return null;
-            }
+            case "xsd:unsignedLong":
+                return typeof(ulong);
+
+            default:
+                return null;
         }
     }
 }

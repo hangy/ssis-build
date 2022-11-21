@@ -14,10 +14,9 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
-namespace SsisBuild.Core.Builder
+namespace SsisBuild.Core.Builder;
+
+public class PasswordRequiredException : BuildArgumentsValidationException
 {
-    public class PasswordRequiredException : BuildArgumentsValidationException
-    {
-        public PasswordRequiredException (string protectionLevel) : base ($"NewPassword or Password argument is required when argument ProtectionLevel is {protectionLevel}") { }
-    }
+    public PasswordRequiredException(string protectionLevel) : base($"NewPassword or Password argument is required when argument ProtectionLevel is {protectionLevel}") { }
 }

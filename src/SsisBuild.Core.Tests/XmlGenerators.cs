@@ -14,19 +14,19 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.Tests;
+
+using SsisBuild.Core.ProjectManagement;
+using SsisBuild.Tests.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SsisBuild.Core.ProjectManagement;
-using SsisBuild.Tests.Helpers;
 
-namespace SsisBuild.Core.Tests
+public static class XmlGenerators
 {
-    public static class XmlGenerators
+    public static string ProjectConnectionsFile()
     {
-        public static string ProjectConnectionsFile()
-        {
-            return $@"<?xml version=""1.0""?>
+        return $@"<?xml version=""1.0""?>
                 <DTS:ConnectionManager xmlns:DTS=""www.microsoft.com/SqlServer/Dts""
                   DTS:ObjectName=""{Fakes.RandomString()}""
                   DTS:DTSID=""{Guid.NewGuid():B}""
@@ -34,23 +34,23 @@ namespace SsisBuild.Core.Tests
                   <DTS:ObjectData>
                   </DTS:ObjectData>
                 </DTS:ConnectionManager>";
-        }
+    }
 
-        public static string ProjectParamsFile(IList<ParameterSetupData> parameters)
-        {
-            return $@"<?xml version=""1.0""?>
+    public static string ProjectParamsFile(IList<ParameterSetupData> parameters)
+    {
+        return $@"<?xml version=""1.0""?>
                 <SSIS:Parameters xmlns:SSIS=""www.microsoft.com/SqlServer/SSIS"">
                 {String.Join("", parameters.Select(p => ProjectFileParameter(p.Name, p.Value, p.Sensitive, p.DataType)))}
             </SSIS:Parameters>";
-        }
+    }
 
-        public static string ProjectFileParameter(string name, string value, bool sensitive, DataType dataType, bool hasValue = true)
-        {
-            var sensitiveInt = sensitive ? 1 : 0;
-            var sensitiveAttr = sensitive ? "SSIS:Sensitive =\"1\"" : null;
-            var valueElement = hasValue ? $@"<SSIS:Property SSIS:Name=""Value"" {sensitiveAttr}>{value}</SSIS:Property>" : null;
+    public static string ProjectFileParameter(string name, string value, bool sensitive, DataType dataType, bool hasValue = true)
+    {
+        var sensitiveInt = sensitive ? 1 : 0;
+        var sensitiveAttr = sensitive ? "SSIS:Sensitive =\"1\"" : null;
+        var valueElement = hasValue ? $@"<SSIS:Property SSIS:Name=""Value"" {sensitiveAttr}>{value}</SSIS:Property>" : null;
 
-            return $@"<SSIS:Parameter SSIS:Name=""{name}"" xmlns:SSIS=""www.microsoft.com/SqlServer/SSIS"">
+        return $@"<SSIS:Parameter SSIS:Name=""{name}"" xmlns:SSIS=""www.microsoft.com/SqlServer/SSIS"">
                 <SSIS:Properties>
                   <SSIS:Property
                     SSIS:Name=""ID"">{Guid.NewGuid():B}</SSIS:Property>
@@ -69,11 +69,11 @@ namespace SsisBuild.Core.Tests
                     SSIS:Name=""DataType"">{dataType:D}</SSIS:Property>
                 </SSIS:Properties>
               </SSIS:Parameter>";
-        }
+    }
 
-        public static string ConfigurationFile(string configurationName, IDictionary<string, string> parameters)
-        {
-            return $@"<?xml version=""1.0"" encoding=""utf-8""?>
+    public static string ConfigurationFile(string configurationName, IDictionary<string, string> parameters)
+    {
+        return $@"<?xml version=""1.0"" encoding=""utf-8""?>
                   <Project xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
                   <Configurations>
                     <Configuration>
@@ -92,11 +92,11 @@ namespace SsisBuild.Core.Tests
                     </Configuration>
                   </Configurations>
                 </Project>";
-        }
+    }
 
-        internal static string UserConfigurationFile(string configurationName, IDictionary<string, string> parameters)
-        {
-            return $@"<?xml version=""1.0"" encoding=""utf-8""?>
+    internal static string UserConfigurationFile(string configurationName, IDictionary<string, string> parameters)
+    {
+        return $@"<?xml version=""1.0"" encoding=""utf-8""?>
                   <DataTransformationsUserConfiguration xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
                   <Configurations>
                     <Configuration>
@@ -109,20 +109,20 @@ namespace SsisBuild.Core.Tests
                     </Configuration>
                   </Configurations>
                 </DataTransformationsUserConfiguration>";
-        }
+    }
 
-        private static string ConfigurationParameter(string name, string value)
-        {
-            return $@"<ConfigurationSetting>
+    private static string ConfigurationParameter(string name, string value)
+    {
+        return $@"<ConfigurationSetting>
                         <Id>{Guid.NewGuid():D}</Id>
                         <Name>{name}</Name>
                         <Value xsi:type=""xsd:string"">{value}</Value>
                     </ConfigurationSetting>";
-        }
+    }
 
-        public static string PackageFile(string sensitiveParameterValue, int protectionLevel, string sensitivePasswordValue)
-        {
-            return $@"<?xml version=""1.0""?>
+    public static string PackageFile(string sensitiveParameterValue, int protectionLevel, string sensitivePasswordValue)
+    {
+        return $@"<?xml version=""1.0""?>
                 <DTS:Executable xmlns:DTS=""www.microsoft.com/SqlServer/Dts""
                 DTS:ProtectionLevel=""{protectionLevel}"">
                  <DTS:ConnectionManager DTS:ConnectionString=""{Fakes.RandomString()}"">
@@ -132,13 +132,13 @@ namespace SsisBuild.Core.Tests
                     <DTS:Property DTS:Name=""ParameterValue"">{sensitiveParameterValue}</DTS:Property>
                 </DTS:PackageParameter>
                 </DTS:Executable>";
-        }
+    }
 
 
-        public static string ProjectManifestFile(ProtectionLevel protectionLevel, int versionMajor, int versionMinor, string versionComments, int versionBuild, string description,
-            string[] packages, string[] connectionManagers, ParameterSetupData[] parameters)
-        {
-            return $@"<SSIS:Project SSIS:ProtectionLevel=""{protectionLevel:G}"" xmlns:SSIS=""www.microsoft.com/SqlServer/SSIS"">
+    public static string ProjectManifestFile(ProtectionLevel protectionLevel, int versionMajor, int versionMinor, string versionComments, int versionBuild, string description,
+        string[] packages, string[] connectionManagers, ParameterSetupData[] parameters)
+    {
+        return $@"<SSIS:Project SSIS:ProtectionLevel=""{protectionLevel:G}"" xmlns:SSIS=""www.microsoft.com/SqlServer/SSIS"">
 	            <SSIS:Properties>
 	              <SSIS:Property SSIS:Name=""ID"">{Guid.NewGuid():B}</SSIS:Property>
 	              <SSIS:Property SSIS:Name=""Name"">{Fakes.RandomString()}</SSIS:Property>
@@ -164,16 +164,16 @@ namespace SsisBuild.Core.Tests
 	              </SSIS:ProjectConnectionParameters>
                   <SSIS:PackageInfo>
                     {String.Join("",
-                packages.Select<string, string>(p => ProjectManifestFile_PackageMetadata(p, parameters, versionMajor, versionMinor, versionBuild, versionComments, protectionLevel)))}
+            packages.Select<string, string>(p => ProjectManifestFile_PackageMetadata(p, parameters, versionMajor, versionMinor, versionBuild, versionComments, protectionLevel)))}
                   </SSIS:PackageInfo>
                 </SSIS:DeploymentInfo>		  
             </SSIS:Project>";
-        }
+    }
 
-        private static string ProjectManifestFile_PackageMetadata(string packageName, ParameterSetupData[] parameters, int versionMajor, int versionMinor, int versionBuild,
-            string versionComments, ProtectionLevel protectionLevel)
-        {
-            return $@"<SSIS:PackageMetaData SSIS:Name=""{packageName}.dtsx"">
+    private static string ProjectManifestFile_PackageMetadata(string packageName, ParameterSetupData[] parameters, int versionMajor, int versionMinor, int versionBuild,
+        string versionComments, ProtectionLevel protectionLevel)
+    {
+        return $@"<SSIS:PackageMetaData SSIS:Name=""{packageName}.dtsx"">
                       <SSIS:Properties>
 		                <SSIS:Property SSIS:Name=""ID"">{Guid.NewGuid():B}</SSIS:Property>
 		                <SSIS:Property SSIS:Name=""Name"">{packageName}</SSIS:Property>
@@ -191,16 +191,15 @@ namespace SsisBuild.Core.Tests
     		            {String.Join("", parameters.Select<ParameterSetupData, string>(p => ProjectFileParameter(p.Name, p.Value, p.Sensitive, p.DataType)))}
                       </SSIS:Parameters>
 	                </SSIS:PackageMetaData>";
-        }
+    }
 
-        private static string ProjectManifestFile_Package(string name)
-        {
-            return $@"<SSIS:Package SSIS:Name=""{name}"" SSIS:EntryPoint=""1"" />";
-        }
+    private static string ProjectManifestFile_Package(string name)
+    {
+        return $@"<SSIS:Package SSIS:Name=""{name}"" SSIS:EntryPoint=""1"" />";
+    }
 
-        private static string ProjectManifestFile_ConnectionManager(string name)
-        {
-            return $@"<SSIS:ConnectionManager SSIS:Name=""{name}"" />";
-        }
+    private static string ProjectManifestFile_ConnectionManager(string name)
+    {
+        return $@"<SSIS:ConnectionManager SSIS:Name=""{name}"" />";
     }
 }

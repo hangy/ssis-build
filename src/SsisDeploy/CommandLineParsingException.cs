@@ -14,14 +14,13 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisDeploy;
+
 using System;
 
-namespace SsisDeploy
+public class CommandLineParsingException : Exception
 {
-    public class CommandLineParsingException : Exception
+    public CommandLineParsingException(string message) : base(message)
     {
-        public CommandLineParsingException(string message) : base (message)
-        {
-        }
     }
 }

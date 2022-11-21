@@ -14,28 +14,27 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.ProjectManagement;
+
 using System.Collections.Generic;
 using System.Xml;
 
-namespace SsisBuild.Core.ProjectManagement
+public class ProjectParams : ProjectFile
 {
-    public class ProjectParams : ProjectFile
+    protected override IList<IParameter> ExtractParameters()
     {
-        protected override IList<IParameter> ExtractParameters()
+        var parameterNodes = FileXmlDocument.SelectNodes("/SSIS:Parameters/SSIS:Parameter", NamespaceManager);
+
+        if (parameterNodes == null || parameterNodes.Count == 0)
+            return null;
+
+        var parameters = new List<IParameter>();
+
+        foreach (XmlNode parameterNode in parameterNodes)
         {
-            var parameterNodes = FileXmlDocument.SelectNodes("/SSIS:Parameters/SSIS:Parameter", NamespaceManager);
-
-            if (parameterNodes == null || parameterNodes.Count == 0)
-                return null;
-
-            var parameters = new List<IParameter>();
-
-            foreach (XmlNode parameterNode in parameterNodes)
-            {
-                parameters.Add(new ProjectParameter("Project", parameterNode));
-            }
-
-            return parameters;
+            parameters.Add(new ProjectParameter("Project", parameterNode));
         }
+
+        return parameters;
     }
 }

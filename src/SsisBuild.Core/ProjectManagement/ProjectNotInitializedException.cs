@@ -14,14 +14,13 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.ProjectManagement;
+
 using System;
 
-namespace SsisBuild.Core.ProjectManagement
+public class ProjectNotInitializedException : Exception
 {
-    public class ProjectNotInitializedException : Exception
+    public ProjectNotInitializedException() : base("Project must be loaded from dtproj or ispac file before this operation can be performed")
     {
-        public ProjectNotInitializedException() : base("Project must be loaded from dtproj or ispac file before this operation can be performed")
-        {
-        }
     }
 }

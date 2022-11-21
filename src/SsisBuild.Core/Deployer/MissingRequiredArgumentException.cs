@@ -14,15 +14,14 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
-namespace SsisBuild.Core.Deployer
-{
-    public class MissingRequiredArgumentException : DeployArgumentsValidationException
-    {
-        public string MissingArgument { get; }
+namespace SsisBuild.Core.Deployer;
 
-        public MissingRequiredArgumentException(string requiredArgument) : base($"{requiredArgument} argument is required.")
-        {
-            MissingArgument = requiredArgument;
-        }
+public class MissingRequiredArgumentException : DeployArgumentsValidationException
+{
+    public string MissingArgument { get; }
+
+    public MissingRequiredArgumentException(string requiredArgument) : base($"{requiredArgument} argument is required.")
+    {
+        MissingArgument = requiredArgument;
     }
 }

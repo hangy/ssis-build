@@ -14,72 +14,71 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.Tests;
+
 using SsisBuild.Core.Deployer;
 using SsisBuild.Tests.Helpers;
 using Xunit;
 
-namespace SsisBuild.Core.Tests
+public class DeployArgumentsTests
 {
-    public class DeployArgumentsTests
+    [Fact]
+    public void Pass_New_AllArguments()
     {
-        [Fact]
-        public void Pass_New_AllArguments()
-        {
-            // Setup
-            var workingFolder = Fakes.RandomString();
-            var deploymentFilePath = Fakes.RandomString();
-            var serverInstance = Fakes.RandomString();
-            var serverInstanceUserID = Fakes.RandomString();
-            var serverInstancePassword = Fakes.RandomString();
-            var catalog = Fakes.RandomString();
-            var folder = Fakes.RandomString();
-            var projectName = Fakes.RandomString();
-            var projectPassword = Fakes.RandomString();
-            var eraseSensitiveInfo = Fakes.RandomBool();
+        // Setup
+        var workingFolder = Fakes.RandomString();
+        var deploymentFilePath = Fakes.RandomString();
+        var serverInstance = Fakes.RandomString();
+        var serverInstanceUserID = Fakes.RandomString();
+        var serverInstancePassword = Fakes.RandomString();
+        var catalog = Fakes.RandomString();
+        var folder = Fakes.RandomString();
+        var projectName = Fakes.RandomString();
+        var projectPassword = Fakes.RandomString();
+        var eraseSensitiveInfo = Fakes.RandomBool();
 
 
-            // Execute
-            var deployArguments = new DeployArguments(workingFolder, deploymentFilePath, serverInstance, catalog, folder, projectName, projectPassword, eraseSensitiveInfo, serverInstanceUserID, serverInstancePassword);
+        // Execute
+        var deployArguments = new DeployArguments(workingFolder, deploymentFilePath, serverInstance, catalog, folder, projectName, projectPassword, eraseSensitiveInfo, serverInstanceUserID, serverInstancePassword);
 
-            // Assert
-            Assert.Equal(workingFolder, deployArguments.WorkingFolder);
-            Assert.Equal(deploymentFilePath, deployArguments.DeploymentFilePath);
-            Assert.Equal(serverInstance, deployArguments.ServerInstance);
-            Assert.Equal(serverInstanceUserID, deployArguments.ServerInstanceUserID);
-            Assert.Equal(serverInstancePassword, deployArguments.ServerInstancePassword);
-            Assert.Equal(catalog, deployArguments.Catalog);
-            Assert.Equal(folder, deployArguments.Folder);
-            Assert.Equal(projectName, deployArguments.ProjectName);
-            Assert.Equal(projectPassword, deployArguments.ProjectPassword);
-            Assert.Equal(eraseSensitiveInfo, deployArguments.EraseSensitiveInfo);
-        }
+        // Assert
+        Assert.Equal(workingFolder, deployArguments.WorkingFolder);
+        Assert.Equal(deploymentFilePath, deployArguments.DeploymentFilePath);
+        Assert.Equal(serverInstance, deployArguments.ServerInstance);
+        Assert.Equal(serverInstanceUserID, deployArguments.ServerInstanceUserID);
+        Assert.Equal(serverInstancePassword, deployArguments.ServerInstancePassword);
+        Assert.Equal(catalog, deployArguments.Catalog);
+        Assert.Equal(folder, deployArguments.Folder);
+        Assert.Equal(projectName, deployArguments.ProjectName);
+        Assert.Equal(projectPassword, deployArguments.ProjectPassword);
+        Assert.Equal(eraseSensitiveInfo, deployArguments.EraseSensitiveInfo);
+    }
 
-        [Fact]
-        public void Fail_New_MissingServerInstance()
-        {
-            // Setup
+    [Fact]
+    public void Fail_New_MissingServerInstance()
+    {
+        // Setup
 
-            // Execute
-            var exception = Record.Exception(() => new DeployArguments(null, null, null, Fakes.RandomString(), Fakes.RandomString(), Fakes.RandomString(), null, Fakes.RandomBool(), null, null));
+        // Execute
+        var exception = Record.Exception(() => new DeployArguments(null, null, null, Fakes.RandomString(), Fakes.RandomString(), Fakes.RandomString(), null, Fakes.RandomBool(), null, null));
 
-            // Assert
-            Assert.NotNull(exception);
-            Assert.IsType<MissingRequiredArgumentException>(exception);
-            Assert.True(((MissingRequiredArgumentException) exception).MissingArgument == nameof(DeployArguments.ServerInstance));
-        }
+        // Assert
+        Assert.NotNull(exception);
+        Assert.IsType<MissingRequiredArgumentException>(exception);
+        Assert.True(((MissingRequiredArgumentException)exception).MissingArgument == nameof(DeployArguments.ServerInstance));
+    }
 
-        [Fact]
-        public void Fail_New_MissingFolder()
-        {
-            // Setup
+    [Fact]
+    public void Fail_New_MissingFolder()
+    {
+        // Setup
 
-            // Execute
-            var exception = Record.Exception(() => new DeployArguments(null, null, Fakes.RandomString(), Fakes.RandomString(), null, Fakes.RandomString(), null, Fakes.RandomBool(), null, null));
+        // Execute
+        var exception = Record.Exception(() => new DeployArguments(null, null, Fakes.RandomString(), Fakes.RandomString(), null, Fakes.RandomString(), null, Fakes.RandomBool(), null, null));
 
-            // Assert
-            Assert.NotNull(exception);
-            Assert.IsType<MissingRequiredArgumentException>(exception);
-            Assert.True(((MissingRequiredArgumentException)exception).MissingArgument == nameof(DeployArguments.Folder));
-        }
+        // Assert
+        Assert.NotNull(exception);
+        Assert.IsType<MissingRequiredArgumentException>(exception);
+        Assert.True(((MissingRequiredArgumentException)exception).MissingArgument == nameof(DeployArguments.Folder));
     }
 }

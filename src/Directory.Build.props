@@ -1,0 +1,21 @@
+<Project>
+
+  <PropertyGroup>
+    <Company>Roman Tumaykin</Company>
+    <Copyright>Copyright © 2017 Roman Tumaykin</Copyright>
+    <AssemblyVersion>2.3.0.0</AssemblyVersion>
+    <FileVersion>2.3.0.0</FileVersion>
+    <Version>2.3.0.0</Version>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageTags>SSIS build tools</PackageTags>
+    <PackageReleaseNotes>Completely removed Microsoft DTS dependencies from the library. The tool can work standalone with no need to install any dependencies
+Added SsisDeploy application which is capable of deploying any ispac deployment packages
+Added unit tests with 100% code coverage
+Removed SensitiveParameter Build Argument because it was causing runtime issues</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/rtumaykin/ssis-build/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/rtumaykin/ssis-build/</RepositoryUrl>
+    <Title>SSIS Build</Title>
+    <Description>A command line utility that builds an ispac file from a Visual Studio SSIS project (project deployment model only)</Description>
+  </PropertyGroup>
+
+</Project>

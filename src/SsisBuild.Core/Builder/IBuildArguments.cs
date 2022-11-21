@@ -14,20 +14,19 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.Builder;
+
 using System.Collections.Generic;
 
-namespace SsisBuild.Core.Builder
+public interface IBuildArguments
 {
-    public interface IBuildArguments
-    {
-        string WorkingFolder { get; }
-        string ProjectPath { get; }
-        string OutputFolder { get; }
-        string ProtectionLevel { get; }
-        string Password { get; }
-        string NewPassword { get; }
-        string Configuration { get; }
-        string ReleaseNotes { get; }
-        IDictionary<string, string> Parameters { get; }
-    }
+    string WorkingFolder { get; }
+    string ProjectPath { get; }
+    string OutputFolder { get; }
+    string ProtectionLevel { get; }
+    string Password { get; }
+    string NewPassword { get; }
+    string Configuration { get; }
+    string ReleaseNotes { get; }
+    IDictionary<string, string> Parameters { get; }
 }

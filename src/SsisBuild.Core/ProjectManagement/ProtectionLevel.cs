@@ -14,15 +14,14 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
-namespace SsisBuild.Core.ProjectManagement
+namespace SsisBuild.Core.ProjectManagement;
+
+public enum ProtectionLevel
 {
-    public enum ProtectionLevel
-    {
-        DontSaveSensitive,
-        EncryptSensitiveWithUserKey,
-        EncryptSensitiveWithPassword,
-        EncryptAllWithPassword,
-        EncryptAllWithUserKey,
-        ServerStorage
-    }
+    DontSaveSensitive,
+    EncryptSensitiveWithUserKey,
+    EncryptSensitiveWithPassword,
+    EncryptAllWithPassword,
+    EncryptAllWithUserKey,
+    ServerStorage
 }

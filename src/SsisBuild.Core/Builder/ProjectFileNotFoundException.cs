@@ -14,12 +14,11 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
-namespace SsisBuild.Core.Builder
+namespace SsisBuild.Core.Builder;
+
+public class ProjectFileNotFoundException : BuildArgumentsValidationException
 {
-    public class ProjectFileNotFoundException : BuildArgumentsValidationException
+    public ProjectFileNotFoundException(string currentFolder) : base($"Unable find any project file in {currentFolder}.")
     {
-        public ProjectFileNotFoundException(string currentFolder) : base($"Unable find any project file in {currentFolder}.")
-        {
-        }
     }
 }

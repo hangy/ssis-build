@@ -14,22 +14,21 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
-namespace SsisBuild.Core.ProjectManagement
+namespace SsisBuild.Core.ProjectManagement;
+
+public enum DataType
 {
-    public enum DataType
-    {
-        Boolean = 3,
-        Byte = 6,
-        DateTime = 16,
-        Decimal = 15,
-        Double = 14,
-        Int16 = 7,
-        Int32 = 9,
-        Int64 = 11,
-        SByte = 5,
-        Single = 13,
-        String = 18,
-        UInt32 = 10,
-        UInt64 = 12
-    }
+    Boolean = 3,
+    Byte = 6,
+    DateTime = 16,
+    Decimal = 15,
+    Double = 14,
+    Int16 = 7,
+    Int32 = 9,
+    Int64 = 11,
+    SByte = 5,
+    Single = 13,
+    String = 18,
+    UInt32 = 10,
+    UInt64 = 12
 }

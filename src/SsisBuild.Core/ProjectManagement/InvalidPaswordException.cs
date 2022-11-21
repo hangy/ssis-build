@@ -14,11 +14,10 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.ProjectManagement;
+
 using System;
 
-namespace SsisBuild.Core.ProjectManagement
+public class InvalidPaswordException : Exception
 {
-    public class InvalidPaswordException : Exception
-    {
-    }
 }

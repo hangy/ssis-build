@@ -14,12 +14,11 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
-namespace SsisBuild.Core.Deployer
+namespace SsisBuild.Core.Deployer;
+
+public class DeploymentFileNotFoundException : DeployArgumentsValidationException
 {
-    public class DeploymentFileNotFoundException : DeployArgumentsValidationException
+    public DeploymentFileNotFoundException(string currentFolder) : base($"Unable find any project file in {currentFolder}.")
     {
-        public DeploymentFileNotFoundException(string currentFolder) : base($"Unable find any project file in {currentFolder}.")
-        {
-        }
     }
 }

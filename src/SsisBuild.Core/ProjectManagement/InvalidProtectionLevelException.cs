@@ -14,17 +14,16 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.ProjectManagement;
+
 using System;
 
-namespace SsisBuild.Core.ProjectManagement
+public class InvalidProtectionLevelException : Exception
 {
-    public class InvalidProtectionLevelException : Exception
-    {
-        public ProtectionLevel ProtectionLevel { get; }
+    public ProtectionLevel ProtectionLevel { get; }
 
-        public InvalidProtectionLevelException(ProtectionLevel protectionLevel) : base($"Invalid Protection Level for Deployment Package: {protectionLevel}.")
-        {
-            ProtectionLevel = protectionLevel;
-        }
+    public InvalidProtectionLevelException(ProtectionLevel protectionLevel) : base($"Invalid Protection Level for Deployment Package: {protectionLevel}.")
+    {
+        ProtectionLevel = protectionLevel;
     }
 }

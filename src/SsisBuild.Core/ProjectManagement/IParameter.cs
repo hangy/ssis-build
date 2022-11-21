@@ -14,18 +14,17 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.ProjectManagement;
+
 using System;
 
-namespace SsisBuild.Core.ProjectManagement
+public interface IParameter
 {
-    public interface IParameter
-    {
-        string Name { get; }
-        Type ParameterDataType { get; }
-        bool Sensitive { get; }
-        ParameterSource Source { get; }
-        string Value { get; }
+    string Name { get; }
+    Type ParameterDataType { get; }
+    bool Sensitive { get; }
+    ParameterSource Source { get; }
+    string Value { get; }
 
-        void SetValue(string value, ParameterSource source);
-    }
+    void SetValue(string value, ParameterSource source);
 }

@@ -14,77 +14,76 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.Tests;
+
+using SsisBuild.Core.ProjectManagement;
+using SsisBuild.Tests.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using SsisBuild.Core.ProjectManagement;
-using SsisBuild.Tests.Helpers;
 using Xunit;
 
-namespace SsisBuild.Core.Tests
+public class ProjectParamsTests : IDisposable
 {
-    public class ProjectParamsTests : IDisposable
+    private readonly string _workingFolder;
+
+    public ProjectParamsTests()
     {
-        private readonly string _workingFolder;
+        _workingFolder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(_workingFolder);
+    }
 
-        public ProjectParamsTests()
+    [Theory, MemberData(nameof(ParameterData))]
+    public void Pass_New(IList<ParameterSetupData> parameters)
+    {
+        // Setup
+        var xml = XmlGenerators.ProjectParamsFile(parameters);
+        var path = Path.Combine(_workingFolder, Guid.NewGuid().ToString("N"));
+        File.WriteAllText(path, xml);
+
+        // Execute
+        var projectParams = new ProjectParams();
+        projectParams.Initialize(path, null);
+
+        // Assert
+        Assert.NotNull(projectParams);
+
+        foreach (var parameterSetupData in parameters)
         {
-            _workingFolder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
-            Directory.CreateDirectory(_workingFolder);
+            var fullName = $"Project::{parameterSetupData.Name}";
+            Assert.True(projectParams.Parameters.ContainsKey(fullName));
+            Assert.Equal(parameterSetupData.Value, projectParams.Parameters[fullName].Value);
+            Assert.Equal(parameterSetupData.Sensitive, projectParams.Parameters[fullName].Sensitive);
+            Assert.Equal(parameterSetupData.DataType.ToString("G"), projectParams.Parameters[fullName].ParameterDataType.Name);
         }
+    }
 
-        [Theory, MemberData(nameof(ParameterData))]
-        public void Pass_New(IList<ParameterSetupData> parameters)
+    public void Dispose()
+    {
+        Directory.Delete(_workingFolder, true);
+    }
+
+    public static IEnumerable<object[]> ParameterData()
+    {
+        var rnd = new Random(DateTime.Now.Millisecond);
+        var testsCount = rnd.Next(10, 40);
+        for (var cnt = 0; cnt < testsCount; cnt++)
         {
-            // Setup
-            var xml = XmlGenerators.ProjectParamsFile(parameters);
-            var path = Path.Combine(_workingFolder, Guid.NewGuid().ToString("N"));
-            File.WriteAllText(path, xml);
-
-            // Execute
-            var projectParams = new ProjectParams();
-            projectParams.Initialize(path, null);
-
-            // Assert
-            Assert.NotNull(projectParams);
-
-            foreach (var parameterSetupData in parameters)
+            var paramsCount = rnd.Next(0, 20);
+            var paramsData = new List<ParameterSetupData>();
+            for (var cnt1 = 0; cnt1 < paramsCount; cnt1++)
             {
-                var fullName = $"Project::{parameterSetupData.Name}";
-                Assert.True(projectParams.Parameters.ContainsKey(fullName));
-                Assert.Equal(parameterSetupData.Value, projectParams.Parameters[fullName].Value);
-                Assert.Equal(parameterSetupData.Sensitive, projectParams.Parameters[fullName].Sensitive);
-                Assert.Equal(parameterSetupData.DataType.ToString("G"), projectParams.Parameters[fullName].ParameterDataType.Name);
-            }
-        }
-        
-        public void Dispose()
-        {
-            Directory.Delete(_workingFolder, true);
-        }
-
-        private static IEnumerable<object[]> ParameterData()
-        {
-            var rnd = new Random(DateTime.Now.Millisecond);
-            var testsCount = rnd.Next(10, 40);
-            for (var cnt = 0; cnt < testsCount; cnt++)
-            {
-                var paramsCount = rnd.Next(0, 20);
-                var paramsData = new List<ParameterSetupData>();
-                for (var cnt1 = 0; cnt1 < paramsCount; cnt1++)
+                paramsData.Add(new ParameterSetupData()
                 {
-                    paramsData.Add(new ParameterSetupData()
-                    {
-                        Name = Fakes.RandomString(),
-                        Value = Fakes.RandomString(),
-                        DataType = DataType.String,
-                        Sensitive = rnd.Next(0, 1000) < 500
-                    });
-                }
-
-                yield return new object[] {paramsData};
+                    Name = Fakes.RandomString(),
+                    Value = Fakes.RandomString(),
+                    DataType = DataType.String,
+                    Sensitive = rnd.Next(0, 1000) < 500
+                });
             }
-            yield return new object[] { new List<ParameterSetupData>() };
+
+            yield return new object[] { paramsData };
         }
+        yield return new object[] { new List<ParameterSetupData>() };
     }
 }

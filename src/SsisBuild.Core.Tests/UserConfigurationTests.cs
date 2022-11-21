@@ -14,123 +14,116 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.Tests;
+
+using SsisBuild.Core.ProjectManagement;
+using SsisBuild.Tests.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
-using SsisBuild.Core.ProjectManagement;
-using SsisBuild.Tests.Helpers;
 using Xunit;
 
-namespace SsisBuild.Core.Tests
+public class UserConfigurationTests
 {
-    public class UserConfigurationTests
+    [Fact]
+    public void Pass_New()
     {
-        [Fact]
-        public void Pass_New()
+        // Setup
+        var parameters = new Dictionary<string, string>
         {
-            // Setup
-            var parameters = new Dictionary<string, string>
-            {
-                {Fakes.RandomString(), Fakes.RandomString()},
-                {Fakes.RandomString(), Fakes.RandomString()}
-            };
+            {Fakes.RandomString(), Fakes.RandomString()},
+            {Fakes.RandomString(), Fakes.RandomString()}
+        };
 
-            var name = Fakes.RandomString();
+        var name = Fakes.RandomString();
 
-            var xml = XmlGenerators.UserConfigurationFile(name, parameters);
+        var xml = XmlGenerators.UserConfigurationFile(name, parameters);
 
-            var xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(xml);
+        var xmlDoc = new XmlDocument();
+        xmlDoc.LoadXml(xml);
 
-            // Execute
-            var config = new UserConfiguration(name);
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = new StreamWriter(stream))
-                {
-                    writer.Write(xml);
-                    writer.Flush();
-                    stream.Position = 0;
+        // Execute
+        var config = new UserConfiguration(name);
+        using (var stream = new MemoryStream())
+        {
+            using var writer = new StreamWriter(stream);
+            writer.Write(xml);
+            writer.Flush();
+            stream.Position = 0;
 
-                    config.Initialize(stream, Fakes.RandomString());
-                }
-            }
-            
-            // Assert
-            Assert.NotNull(config.Parameters);
-            foreach (var parameter in parameters)
-            {
-                Assert.True(config.Parameters.ContainsKey(parameter.Key));
-                Assert.Equal(null, config.Parameters[parameter.Key].Value);
-            }
-
+            config.Initialize(stream, Fakes.RandomString());
         }
 
-        [Fact]
-        public void Pass_New_NoParameters()
+        // Assert
+        Assert.NotNull(config.Parameters);
+        foreach (var parameter in parameters)
         {
-            // Setup
-            var parameters = new Dictionary<string, string>();
-
-            var name = Fakes.RandomString();
-
-            var xml = XmlGenerators.UserConfigurationFile(name, parameters);
-
-            var xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(xml);
-
-            // Execute
-            var config = new UserConfiguration(name);
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = new StreamWriter(stream))
-                {
-                    writer.Write(xml);
-                    writer.Flush();
-                    stream.Position = 0;
-
-                    config.Initialize(stream, null);
-                }
-            }
-
-            // Assert
-            Assert.NotNull(config.Parameters);
-            Assert.True(config.Parameters.Count == 0);
+            Assert.True(config.Parameters.ContainsKey(parameter.Key));
+            Assert.Null(config.Parameters[parameter.Key].Value);
         }
 
-        [Fact]
-        public void Fail_New_NoConfiguration()
+    }
+
+    [Fact]
+    public void Pass_New_NoParameters()
+    {
+        // Setup
+        var parameters = new Dictionary<string, string>();
+
+        var name = Fakes.RandomString();
+
+        var xml = XmlGenerators.UserConfigurationFile(name, parameters);
+
+        var xmlDoc = new XmlDocument();
+        xmlDoc.LoadXml(xml);
+
+        // Execute
+        var config = new UserConfiguration(name);
+        using (var stream = new MemoryStream())
         {
-            // Setup
-            var parameters = new Dictionary<string, string>();
+            using var writer = new StreamWriter(stream);
+            writer.Write(xml);
+            writer.Flush();
+            stream.Position = 0;
 
-            var name = Fakes.RandomString();
-
-            var xml = XmlGenerators.UserConfigurationFile(Guid.NewGuid().ToString("N"), parameters);
-
-            var xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(xml);
-
-            // Execute
-            var config = new UserConfiguration(name);
-            Exception exception;
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = new StreamWriter(stream))
-                {
-                    writer.Write(xml);
-                    writer.Flush();
-                    stream.Position = 0;
-
-                    exception = Record.Exception(() => config.Initialize(stream, null));
-                }
-            }
-
-            // Assert
-            Assert.NotNull(exception);
-            Assert.IsType<InvalidConfigurationNameException>(exception);
-            Assert.Equal(name, (exception as InvalidConfigurationNameException)?.ConfigurationName);
+            config.Initialize(stream, null);
         }
+
+        // Assert
+        Assert.NotNull(config.Parameters);
+        Assert.True(config.Parameters.Count == 0);
+    }
+
+    [Fact]
+    public void Fail_New_NoConfiguration()
+    {
+        // Setup
+        var parameters = new Dictionary<string, string>();
+
+        var name = Fakes.RandomString();
+
+        var xml = XmlGenerators.UserConfigurationFile(Guid.NewGuid().ToString("N"), parameters);
+
+        var xmlDoc = new XmlDocument();
+        xmlDoc.LoadXml(xml);
+
+        // Execute
+        var config = new UserConfiguration(name);
+        Exception exception;
+        using (var stream = new MemoryStream())
+        {
+            using var writer = new StreamWriter(stream);
+            writer.Write(xml);
+            writer.Flush();
+            stream.Position = 0;
+
+            exception = Record.Exception(() => config.Initialize(stream, null));
+        }
+
+        // Assert
+        Assert.NotNull(exception);
+        Assert.IsType<InvalidConfigurationNameException>(exception);
+        Assert.Equal(name, (exception as InvalidConfigurationNameException)?.ConfigurationName);
     }
 }

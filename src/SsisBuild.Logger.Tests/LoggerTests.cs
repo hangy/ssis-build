@@ -14,88 +14,87 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Logger.Tests;
+
+using SsisBuild.Tests.Helpers;
 using System;
 using System.IO;
-using SsisBuild.Tests.Helpers;
 using Xunit;
 
-namespace SsisBuild.Logger.Tests
+public class LoggerTests
 {
-    public class LoggerTests
+    [Fact]
+    public void Pass_Message()
     {
-        [Fact]
-        public void Pass_Message()
+        // Setup
+        var stdOut = Console.Out;
+        var consoleOutput = new StringWriter();
+        var message = Fakes.RandomString();
+        var logger = new ConsoleLogger();
+
+        // Execute
+        try
         {
-            // Setup
-            var stdOut = Console.Out;
-            var consoleOutput = new StringWriter();
-            var message = Fakes.RandomString();
-            var logger = new ConsoleLogger();
+            Console.SetOut(consoleOutput);
+            logger.LogMessage(message);
 
-            // Execute
-            try
-            {
-                Console.SetOut(consoleOutput);
-                logger.LogMessage(message);
-
-            }
-            finally
-            {
-                Console.SetOut(stdOut);
-            }
-
-            // Assert
-            Assert.True(consoleOutput.ToString().Contains(message));
+        }
+        finally
+        {
+            Console.SetOut(stdOut);
         }
 
-        [Fact]
-        public void Pass_Warning()
+        // Assert
+        Assert.Contains(message, consoleOutput.ToString());
+    }
+
+    [Fact]
+    public void Pass_Warning()
+    {
+        // Setup
+        var stdOut = Console.Out;
+        var consoleOutput = new StringWriter();
+        var message = Fakes.RandomString();
+        var logger = new ConsoleLogger();
+
+        // Execute
+        try
         {
-            // Setup
-            var stdOut = Console.Out;
-            var consoleOutput = new StringWriter();
-            var message = Fakes.RandomString();
-            var logger = new ConsoleLogger();
+            Console.SetOut(consoleOutput);
+            logger.LogWarning(message);
 
-            // Execute
-            try
-            {
-                Console.SetOut(consoleOutput);
-                logger.LogWarning(message);
-
-            }
-            finally
-            {
-                Console.SetOut(stdOut);
-            }
-
-            // Assert
-            Assert.True(consoleOutput.ToString().Contains(message));
+        }
+        finally
+        {
+            Console.SetOut(stdOut);
         }
 
-        [Fact]
-        public void Pass_Error()
+        // Assert
+        Assert.Contains(message, consoleOutput.ToString());
+    }
+
+    [Fact]
+    public void Pass_Error()
+    {
+        // Setup
+        var stdOut = Console.Out;
+        var consoleOutput = new StringWriter();
+        var message = Fakes.RandomString();
+        var logger = new ConsoleLogger();
+
+        // Execute
+        try
         {
-            // Setup
-            var stdOut = Console.Out;
-            var consoleOutput = new StringWriter();
-            var message = Fakes.RandomString();
-            var logger = new ConsoleLogger();
+            Console.SetOut(consoleOutput);
+            logger.LogError(message);
 
-            // Execute
-            try
-            {
-                Console.SetOut(consoleOutput);
-                logger.LogError(message);
-
-            }
-            finally
-            {
-                Console.SetOut(stdOut);
-            }
-
-            // Assert
-            Assert.True(consoleOutput.ToString().Contains(message));
         }
+        finally
+        {
+            Console.SetOut(stdOut);
+        }
+
+        // Assert
+        Assert.Contains(message, consoleOutput.ToString());
     }
 }

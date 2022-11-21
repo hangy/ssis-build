@@ -14,13 +14,12 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
-namespace SsisBuild.Core.Builder
-{
-    public class InvalidArgumentException : BuildArgumentsValidationException
-    {
-        public InvalidArgumentException(string argument, object value) : base($"Invalid value for argument [{argument}]: {value ?? "(no value)"}")
-        {
-        }
+namespace SsisBuild.Core.Builder;
 
+public class InvalidArgumentException : BuildArgumentsValidationException
+{
+    public InvalidArgumentException(string argument, object value) : base($"Invalid value for argument [{argument}]: {value ?? "(no value)"}")
+    {
     }
+
 }

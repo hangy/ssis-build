@@ -14,14 +14,13 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.Builder;
+
 using System;
 
-namespace SsisBuild.Core.Builder
+public class BuildArgumentsValidationException : Exception
 {
-    public class BuildArgumentsValidationException : Exception
+    public BuildArgumentsValidationException(string message) : base(message)
     {
-        public BuildArgumentsValidationException(string message) : base (message)
-        {
-        }
     }
 }

@@ -14,35 +14,34 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.ProjectManagement;
+
 using System;
 using System.Xml;
 
-namespace SsisBuild.Core.ProjectManagement
+public class InvalidXmlException : Exception
 {
-    public class InvalidXmlException : Exception
+    public string NodeXml { get; }
+    public string Path { get; }
+    public override string Message { get; }
+
+    public InvalidXmlException(string message, XmlNode errorNode)
     {
-        public string NodeXml { get; }
-        public string Path { get; }
-        public override string Message { get; }
+        NodeXml = errorNode?.OuterXml;
+        Path = GetPath(errorNode);
+        Message = $"{message}. (Path: {Path})";
+    }
 
-        public InvalidXmlException(string message, XmlNode errorNode) 
+    private static string GetPath(XmlNode errorNode)
+    {
+        var nodeWalker = errorNode;
+        var path = string.Empty;
+        while (nodeWalker.NodeType != XmlNodeType.Document && nodeWalker.ParentNode != null)
         {
-            NodeXml = errorNode?.OuterXml;
-            Path = GetPath(errorNode);
-            Message = $"{message}. (Path: {Path})";
+            path = $"{nodeWalker.Name}/{path}";
+            nodeWalker = nodeWalker.ParentNode;
         }
 
-        private static string GetPath(XmlNode errorNode)
-        {
-            var nodeWalker = errorNode;
-            var path = string.Empty;
-            while (nodeWalker.NodeType != XmlNodeType.Document && nodeWalker.ParentNode != null)
-            {
-                path = $"{nodeWalker.Name}/{path}";
-                nodeWalker = nodeWalker.ParentNode;
-            }
-
-            return path;
-        }
+        return path;
     }
 }

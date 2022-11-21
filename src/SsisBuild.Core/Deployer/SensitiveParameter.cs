@@ -14,21 +14,20 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.Deployer;
+
 using System;
 
-namespace SsisBuild.Core.Deployer
+public class SensitiveParameter
 {
-    public class SensitiveParameter
-    {
-        public string Name { get; }
-        public Type DataType { get; }
-        public string Value { get; }
+    public string Name { get; }
+    public Type DataType { get; }
+    public string Value { get; }
 
-        public SensitiveParameter(string name, string value, Type dataType)
-        {
-            Name = name;
-            Value = value;
-            DataType = dataType;
-        }
+    public SensitiveParameter(string name, string value, Type dataType)
+    {
+        Name = name;
+        Value = value;
+        DataType = dataType;
     }
 }

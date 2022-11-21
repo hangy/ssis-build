@@ -14,9 +14,8 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
-namespace SsisBuild.Core.ProjectManagement
+namespace SsisBuild.Core.ProjectManagement;
+
+public class ProjectConnection : ProjectFile
 {
-    public class ProjectConnection : ProjectFile
-    {
-    }
 }

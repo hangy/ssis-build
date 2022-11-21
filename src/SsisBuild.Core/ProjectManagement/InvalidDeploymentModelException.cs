@@ -14,12 +14,11 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.ProjectManagement;
+
 using System;
 
-namespace SsisBuild.Core.ProjectManagement
+public class InvalidDeploymentModelException : Exception
 {
-    public class InvalidDeploymentModelException : Exception
-    {
-        public InvalidDeploymentModelException () : base ("This build method only apply to Project deployment model.") { }
-    }
+    public InvalidDeploymentModelException() : base("This build method only apply to Project deployment model.") { }
 }

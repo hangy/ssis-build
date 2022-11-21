@@ -14,16 +14,15 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
-namespace SsisBuild.Core.ProjectManagement
+namespace SsisBuild.Core.ProjectManagement;
+
+public interface IProjectManifest : IProjectFile
 {
-    public interface IProjectManifest : IProjectFile
-    {
-        string[] ConnectionManagerNames { get; }
-        string Description { get; set; }
-        string[] PackageNames { get; }
-        int VersionBuild { get; set; }
-        string VersionComments { get; set; }
-        int VersionMajor { get; set; }
-        int VersionMinor { get; set; }
-    }
+    string[] ConnectionManagerNames { get; }
+    string Description { get; set; }
+    string[] PackageNames { get; }
+    int VersionBuild { get; set; }
+    string VersionComments { get; set; }
+    int VersionMajor { get; set; }
+    int VersionMinor { get; set; }
 }

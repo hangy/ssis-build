@@ -14,14 +14,13 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.Builder;
+
 using System;
 using System.Collections.Generic;
 
-namespace SsisBuild.Core.Builder
+public class ReleaseNotes
 {
-    public class ReleaseNotes
-    {
-        public Version Version { get; set; }
-        public List<string> Notes { get; set; }
-    }
+    public Version Version { get; set; }
+    public List<string> Notes { get; set; }
 }

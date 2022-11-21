@@ -14,225 +14,223 @@
 //   limitations under the License.
 //-----------------------------------------------------------------------
 
+namespace SsisBuild.Core.Tests;
+
+using SsisBuild.Core.ProjectManagement;
+using SsisBuild.Core.ProjectManagement.Helpers;
+using SsisBuild.Tests.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Xml;
 using Xunit;
-using SsisBuild.Core.ProjectManagement;
-using SsisBuild.Core.ProjectManagement.Helpers;
-using SsisBuild.Tests.Helpers;
 
-namespace SsisBuild.Core.Tests
+public class ProjectParameterTests
 {
-    public class ProjectParameterTests
+    [Theory]
+    [InlineData(false, true, DataType.String)]
+    [InlineData(false, false, DataType.Int16)]
+    [InlineData(true, true, DataType.String)]
+    [InlineData(true, false, DataType.Int16)]
+    public void Pass_New_ProjectParameter(bool sensitive, bool withValue, DataType type)
     {
-        [Theory]
-        [InlineData(false, true, DataType.String)]
-        [InlineData(false, false, DataType.Int16)]
-        [InlineData(true, true, DataType.String)]
-        [InlineData(true, false, DataType.Int16)]
-        public void Pass_New_ProjectParameter(bool sensitive, bool withValue, DataType type)
-        {
-            // Setup
-            var name = Fakes.RandomString();
-            var value = Fakes.RandomString();
-            var scope = Fakes.RandomString();
-            var xmldoc  = new XmlDocument();
-            var parameterXml = XmlGenerators.ProjectFileParameter(name, value, sensitive, type, withValue);
+        // Setup
+        var name = Fakes.RandomString();
+        var value = Fakes.RandomString();
+        var scope = Fakes.RandomString();
+        var xmldoc = new XmlDocument();
+        var parameterXml = XmlGenerators.ProjectFileParameter(name, value, sensitive, type, withValue);
 
-            xmldoc.LoadXml(parameterXml);
+        xmldoc.LoadXml(parameterXml);
 
-            // Execute
-            var parameter = new ProjectParameter(scope, xmldoc.DocumentElement);
+        // Execute
+        var parameter = new ProjectParameter(scope, xmldoc.DocumentElement);
 
-            // Assert
-            Assert.NotNull(parameter);
-            Assert.Equal(withValue ? value : null, parameter.Value);
-            Assert.Equal(type.ToString("G"), parameter.ParameterDataType.Name, StringComparer.InvariantCultureIgnoreCase);
-            Assert.Equal(sensitive, parameter.Sensitive);
-            Assert.Equal($"{scope}::{name}", parameter.Name);
-            Assert.Equal(ParameterSource.Original, parameter.Source);
-        }
+        // Assert
+        Assert.NotNull(parameter);
+        Assert.Equal(withValue ? value : null, parameter.Value);
+        Assert.Equal(type.ToString("G"), parameter.ParameterDataType.Name, StringComparer.InvariantCultureIgnoreCase);
+        Assert.Equal(sensitive, parameter.Sensitive);
+        Assert.Equal($"{scope}::{name}", parameter.Name);
+        Assert.Equal(ParameterSource.Original, parameter.Source);
+    }
 
-//        [Theory, MemberData(nameof(DataTypeValues))]
-        [InlineData(DataType.String)]
-        public void Pass_New_ProjectParameter_CoverDataTypes(DataType type)
-        {
-            // Setup
-            var name = Fakes.RandomString();
-            var value = Fakes.RandomString();
-            var scope = Fakes.RandomString();
-            var xmldoc = new XmlDocument();
-            var parameterXml = XmlGenerators.ProjectFileParameter(name, value, false, type);
-            xmldoc.LoadXml(parameterXml);
+    [Theory, MemberData(nameof(DataTypeValues))]
+    public void Pass_New_ProjectParameter_CoverDataTypes(DataType type)
+    {
+        // Setup
+        var name = Fakes.RandomString();
+        var value = Fakes.RandomString();
+        var scope = Fakes.RandomString();
+        var xmldoc = new XmlDocument();
+        var parameterXml = XmlGenerators.ProjectFileParameter(name, value, false, type);
+        xmldoc.LoadXml(parameterXml);
 
-            // Execute
-            var parameter = new ProjectParameter(scope, xmldoc.DocumentElement);
+        // Execute
+        var parameter = new ProjectParameter(scope, xmldoc.DocumentElement);
 
-            // Assert
-            Assert.NotNull(parameter);
-            Assert.Equal((int) type == 1000 ? null : type.ToString("G"), parameter.ParameterDataType?.Name, StringComparer.InvariantCultureIgnoreCase);
-        }
+        // Assert
+        Assert.NotNull(parameter);
+        Assert.Equal((int)type == 1000 ? null : type.ToString("G"), parameter.ParameterDataType?.Name, StringComparer.InvariantCultureIgnoreCase);
+    }
 
-        [Fact]
-        public void Fail_New_ProjectParameter_InvalidDataType()
-        {
-            // Setup
-            var name = Fakes.RandomString();
-            var value = Fakes.RandomString();
-            var scope = Fakes.RandomString();
-            var xmldoc = new XmlDocument();
-            var parameterXml = XmlGenerators.ProjectFileParameter(name, value, false, Fakes.RandomEnum<DataType>());
+    [Fact]
+    public void Fail_New_ProjectParameter_InvalidDataType()
+    {
+        // Setup
+        var name = Fakes.RandomString();
+        var value = Fakes.RandomString();
+        var scope = Fakes.RandomString();
+        var xmldoc = new XmlDocument();
+        var parameterXml = XmlGenerators.ProjectFileParameter(name, value, false, Fakes.RandomEnum<DataType>());
 
-            xmldoc.LoadXml(parameterXml);
+        xmldoc.LoadXml(parameterXml);
 
-            var dataTypeNode = xmldoc.SelectSingleNode("//*[@SSIS:Name=\"DataType\"]", xmldoc.GetNameSpaceManager());
-            if (dataTypeNode != null)
-                dataTypeNode.InnerText = "xyz";
+        var dataTypeNode = xmldoc.SelectSingleNode("//*[@SSIS:Name=\"DataType\"]", xmldoc.GetNameSpaceManager());
+        if (dataTypeNode != null)
+            dataTypeNode.InnerText = "xyz";
 
-            // Execute
-            var exception = Record.Exception(() => new ProjectParameter(scope, xmldoc.DocumentElement));
+        // Execute
+        var exception = Record.Exception(() => new ProjectParameter(scope, xmldoc.DocumentElement));
 
-            // Assert
-            Assert.NotNull(exception);
-            Assert.IsType<InvalidCastException>(exception);
-        }
+        // Assert
+        Assert.NotNull(exception);
+        Assert.IsType<InvalidCastException>(exception);
+    }
 
-        [Fact]
-        public void Pass_New_ProjectParameter_DataTypeValidation()
-        {
-            // Setup
-            var name = Fakes.RandomString();
-            var value = "False";
-            var scope = Fakes.RandomString();
-            var xmldoc = new XmlDocument();
-            var parameterXml = XmlGenerators.ProjectFileParameter(name, value, false, DataType.Boolean);
+    [Fact]
+    public void Pass_New_ProjectParameter_DataTypeValidation()
+    {
+        // Setup
+        var name = Fakes.RandomString();
+        var value = "False";
+        var scope = Fakes.RandomString();
+        var xmldoc = new XmlDocument();
+        var parameterXml = XmlGenerators.ProjectFileParameter(name, value, false, DataType.Boolean);
 
-            xmldoc.LoadXml(parameterXml);
+        xmldoc.LoadXml(parameterXml);
 
-            // Execute
-            var parameter = new ProjectParameter(scope, xmldoc.DocumentElement);
+        // Execute
+        var parameter = new ProjectParameter(scope, xmldoc.DocumentElement);
 
-            // Assert
-            Assert.NotNull(parameter);
-            Assert.Equal("false", parameter.Value);
-        }
+        // Assert
+        Assert.NotNull(parameter);
+        Assert.Equal("false", parameter.Value);
+    }
 
-        [Fact]
-        public void Fail_New_ProjectParameter_NoScope()
-        {
-            // Setup
-            var name = Fakes.RandomString();
-            var value = Fakes.RandomString();
-            var xmldoc = new XmlDocument();
-            var parameterXml = XmlGenerators.ProjectFileParameter(name, value, false, Fakes.RandomEnum<DataType>());
+    [Fact]
+    public void Fail_New_ProjectParameter_NoScope()
+    {
+        // Setup
+        var name = Fakes.RandomString();
+        var value = Fakes.RandomString();
+        var xmldoc = new XmlDocument();
+        var parameterXml = XmlGenerators.ProjectFileParameter(name, value, false, Fakes.RandomEnum<DataType>());
 
-            xmldoc.LoadXml(parameterXml);
+        xmldoc.LoadXml(parameterXml);
 
-            // Execute
-            var exception = Record.Exception(() => new ProjectParameter(null, xmldoc.DocumentElement));
+        // Execute
+        var exception = Record.Exception(() => new ProjectParameter(null, xmldoc.DocumentElement));
 
-            // Assert
-            Assert.NotNull(exception);
-            Assert.IsType<ArgumentNullException>(exception);
-        }
+        // Assert
+        Assert.NotNull(exception);
+        Assert.IsType<ArgumentNullException>(exception);
+    }
 
-        [Fact]
-        public void Fail_New_ProjectParameter_EmptyName()
-        {
-            // Setup
-            var name = string.Empty;
-            var value = Fakes.RandomString();
-            var xmldoc = new XmlDocument();
-            var parameterXml = XmlGenerators.ProjectFileParameter(name, value, Fakes.RandomBool(), Fakes.RandomEnum<DataType>(), Fakes.RandomBool());
+    [Fact]
+    public void Fail_New_ProjectParameter_EmptyName()
+    {
+        // Setup
+        var name = string.Empty;
+        var value = Fakes.RandomString();
+        var xmldoc = new XmlDocument();
+        var parameterXml = XmlGenerators.ProjectFileParameter(name, value, Fakes.RandomBool(), Fakes.RandomEnum<DataType>(), Fakes.RandomBool());
 
-            xmldoc.LoadXml(parameterXml);
+        xmldoc.LoadXml(parameterXml);
 
-            // Execute
-            var exception = Record.Exception(() => new ProjectParameter(Fakes.RandomString(), xmldoc.DocumentElement));
+        // Execute
+        var exception = Record.Exception(() => new ProjectParameter(Fakes.RandomString(), xmldoc.DocumentElement));
 
-            // Assert
-            Assert.NotNull(exception);
-            Assert.IsType<InvalidXmlException>(exception);
-            Assert.Equal(xmldoc.DocumentElement?.OuterXml, ((InvalidXmlException)exception).NodeXml);
-            Assert.NotNull(exception.Message);
-        }
+        // Assert
+        Assert.NotNull(exception);
+        Assert.IsType<InvalidXmlException>(exception);
+        Assert.Equal(xmldoc.DocumentElement?.OuterXml, ((InvalidXmlException)exception).NodeXml);
+        Assert.NotNull(exception.Message);
+    }
 
-        [Fact]
-        public void Fail_New_ProjectParameter_NoProperties()
-        {
-            // Setup
-            var name = Fakes.RandomString();
-            var value = Fakes.RandomString();
-            var xmldoc = new XmlDocument();
-            var parameterXml = $@"<SSIS:Parameter SSIS:Name=""{name}"" xmlns:SSIS=""www.microsoft.com/SqlServer/SSIS"">
+    [Fact]
+    public void Fail_New_ProjectParameter_NoProperties()
+    {
+        // Setup
+        var name = Fakes.RandomString();
+        var value = Fakes.RandomString();
+        var xmldoc = new XmlDocument();
+        var parameterXml = $@"<SSIS:Parameter SSIS:Name=""{name}"" xmlns:SSIS=""www.microsoft.com/SqlServer/SSIS"">
             </SSIS:Parameter>";
 
-            xmldoc.LoadXml(parameterXml);
+        xmldoc.LoadXml(parameterXml);
 
-            // Execute
-            var exception = Record.Exception(() => new ProjectParameter(Fakes.RandomString(), xmldoc.DocumentElement));
+        // Execute
+        var exception = Record.Exception(() => new ProjectParameter(Fakes.RandomString(), xmldoc.DocumentElement));
 
-            // Assert
-            Assert.NotNull(exception);
-            Assert.IsType<InvalidXmlException>(exception);
-            Assert.Equal(xmldoc.DocumentElement?.OuterXml, ((InvalidXmlException) exception).NodeXml);
-            Assert.NotNull(exception.Message);
-        }
+        // Assert
+        Assert.NotNull(exception);
+        Assert.IsType<InvalidXmlException>(exception);
+        Assert.Equal(xmldoc.DocumentElement?.OuterXml, ((InvalidXmlException)exception).NodeXml);
+        Assert.NotNull(exception.Message);
+    }
 
-        [Fact]
-        public void Fail_New_NoXml()
+    [Fact]
+    public void Fail_New_NoXml()
+    {
+        //Execute
+        var exception = Record.Exception(() => new ProjectParameter(Fakes.RandomString(), null));
+
+        // Assert
+        Assert.NotNull(exception);
+        Assert.IsType<ArgumentNullException>(exception);
+    }
+
+    [Theory]
+    [InlineData(true, true, ParameterSource.Manual)]
+    [InlineData(true, false, ParameterSource.Manual)]
+    [InlineData(false, true, ParameterSource.Configuration)]
+    [InlineData(false, false, ParameterSource.Configuration)]
+    public void Pass_SetValue(bool originalNull, bool setToNull, ParameterSource source)
+    {
+        // Setup
+        var name = Fakes.RandomString();
+        var value = Fakes.RandomString();
+        var scope = Fakes.RandomString();
+        var xmldoc = new XmlDocument();
+        // var parameterXml = CreateProjectParameterXml(name, false, originalNull, value, DataType.String);
+        var parameterXml = XmlGenerators.ProjectFileParameter(name, value, false, DataType.String, originalNull);
+
+        xmldoc.LoadXml(parameterXml);
+
+        // Execute
+        var parameter = new ProjectParameter(scope, xmldoc.DocumentElement);
+
+        var newValue = setToNull ? null : Fakes.RandomString();
+
+        parameter.SetValue(newValue, source);
+        var testValueFromXml = xmldoc.SelectSingleNode("//*[@SSIS:Name=\"Value\"]", xmldoc.GetNameSpaceManager())?.InnerText;
+
+        // Assert
+        Assert.Equal(newValue, parameter.Value);
+        Assert.Equal(source, parameter.Source);
+        Assert.Equal(newValue, testValueFromXml);
+    }
+
+    public static IEnumerable<object[]> DataTypeValues
+    {
+        get
         {
-            //Execute
-            var exception = Record.Exception(() => new ProjectParameter(Fakes.RandomString(), null));
-
-            // Assert
-            Assert.NotNull(exception);
-            Assert.IsType<ArgumentNullException>(exception);
-        }
-
-        [Theory]
-        [InlineData(true, true, ParameterSource.Manual)]
-        [InlineData(true, false, ParameterSource.Manual)]
-        [InlineData(false, true, ParameterSource.Configuration)]
-        [InlineData(false, false, ParameterSource.Configuration)]
-        public void Pass_SetValue(bool originalNull, bool setToNull, ParameterSource source)
-        {
-            // Setup
-            var name = Fakes.RandomString();
-            var value = Fakes.RandomString();
-            var scope = Fakes.RandomString();
-            var xmldoc = new XmlDocument();
-            // var parameterXml = CreateProjectParameterXml(name, false, originalNull, value, DataType.String);
-            var parameterXml = XmlGenerators.ProjectFileParameter(name, value, false, DataType.String, originalNull);
-
-            xmldoc.LoadXml(parameterXml);
-
-            // Execute
-            var parameter = new ProjectParameter(scope, xmldoc.DocumentElement);
-
-            var newValue = setToNull ? null : Fakes.RandomString();
-
-            parameter.SetValue(newValue, source);
-            var testValueFromXml = xmldoc.SelectSingleNode("//*[@SSIS:Name=\"Value\"]", xmldoc.GetNameSpaceManager())?.InnerText;
-
-            // Assert
-            Assert.Equal(newValue, parameter.Value);
-            Assert.Equal(source, parameter.Source);
-            Assert.Equal(newValue, testValueFromXml);
-        }
-
-        public static IEnumerable<object[]> DataTypeValues
-        {
-            get
+            foreach (var type in Enum.GetValues(typeof(DataType)))
             {
-                foreach (var type in Enum.GetValues(typeof(DataType)))
-                {
-                    yield return new[] {type};
-                }
+                yield return new[] { type };
             }
         }
     }
-
-    
 }
+
+

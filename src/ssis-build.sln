@@ -3,28 +3,28 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33103.201
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SsisBuild", "SsisBuild\SsisBuild.csproj", "{8B1B1E18-1BA7-4593-AFE2-76064BD213C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SsisBuild", "SsisBuild\SsisBuild.csproj", "{8B1B1E18-1BA7-4593-AFE2-76064BD213C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SsisBuild.Core", "SsisBuild.Core\SsisBuild.Core.csproj", "{01657A26-BE3B-4A6E-A193-E175096F54BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SsisBuild.Core", "SsisBuild.Core\SsisBuild.Core.csproj", "{01657A26-BE3B-4A6E-A193-E175096F54BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SsisBuild.Logger", "SsisBuild.Logger\SsisBuild.Logger.csproj", "{6FADB9E9-CF51-4CAF-8B82-B4B93FD367EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SsisBuild.Logger", "SsisBuild.Logger\SsisBuild.Logger.csproj", "{6FADB9E9-CF51-4CAF-8B82-B4B93FD367EB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7C481875-66A8-4511-81E0-18013D01A666}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SsisDeploy", "SsisDeploy\SsisDeploy.csproj", "{E1F250A7-8D66-46AD-A119-026FCCC3E6AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SsisDeploy", "SsisDeploy\SsisDeploy.csproj", "{E1F250A7-8D66-46AD-A119-026FCCC3E6AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SsisBuild.Tests", "SsisBuild.Tests\SsisBuild.Tests.csproj", "{D30FBDBC-3E97-4BC5-B127-236A4CAD0ABD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SsisBuild.Tests", "SsisBuild.Tests\SsisBuild.Tests.csproj", "{D30FBDBC-3E97-4BC5-B127-236A4CAD0ABD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SsisBuild.Core.Tests", "SsisBuild.Core.Tests\SsisBuild.Core.Tests.csproj", "{066D0E51-E30A-4799-BC71-1069FB52E9AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SsisBuild.Core.Tests", "SsisBuild.Core.Tests\SsisBuild.Core.Tests.csproj", "{066D0E51-E30A-4799-BC71-1069FB52E9AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SsisBuild.Logger.Tests", "SsisBuild.Logger.Tests\SsisBuild.Logger.Tests.csproj", "{F0866407-E091-4871-B956-D15779040290}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SsisBuild.Logger.Tests", "SsisBuild.Logger.Tests\SsisBuild.Logger.Tests.csproj", "{F0866407-E091-4871-B956-D15779040290}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SsisDeploy.Tests", "SsisDeploy.Tests\SsisDeploy.Tests.csproj", "{24D99EAB-D2A3-444E-828B-A35B6E04C488}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SsisDeploy.Tests", "SsisDeploy.Tests\SsisDeploy.Tests.csproj", "{24D99EAB-D2A3-444E-828B-A35B6E04C488}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SsisBuild.Tests.Helpers", "SsisBuild.Tests.Helpers\SsisBuild.Tests.Helpers.csproj", "{17AFE8AD-F52E-44E5-B0F6-1B24F17EDB1B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SsisBuild.Tests.Helpers", "SsisBuild.Tests.Helpers\SsisBuild.Tests.Helpers.csproj", "{17AFE8AD-F52E-44E5-B0F6-1B24F17EDB1B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SsisTool", "SsisTool\SsisTool.csproj", "{15ECBA44-A46E-443F-864B-16D5FD007DF0}"
 EndProject

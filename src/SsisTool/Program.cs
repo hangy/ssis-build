@@ -3,12 +3,10 @@
 using SsisTool;
 using System.CommandLine;
 
-var deployCommand = new Command("deploy", "Deploy a built SSIS package");
-
 var rootCommand = new RootCommand
 {
     BuildCommandFactory.CreateBuildCommand(),
-    deployCommand
+    DeployCommandFactory.CreateDeployCommand()
 };
 
 return await rootCommand.InvokeAsync(args).ConfigureAwait(false);

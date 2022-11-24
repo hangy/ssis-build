@@ -1,17 +1,14 @@
-﻿if (args.Length < 1)
-{
-    return -1;
-}
+﻿// SPDX-License-Identifier: Apache-2.0
 
-if ("build".Equals(args[0], StringComparison.OrdinalIgnoreCase))
-{
-    SsisBuild.Program.Main(args[1..]);
-    return 0;
-}
-else if ("deploy".Equals(args[0], StringComparison.OrdinalIgnoreCase))
-{
-    SsisDeploy.Program.Main(args[1..]);
-    return 0;
-}
+using SsisTool;
+using System.CommandLine;
 
-return -1;
+var deployCommand = new Command("deploy", "Deploy a built SSIS package");
+
+var rootCommand = new RootCommand
+{
+    BuildCommandFactory.CreateBuildCommand(),
+    deployCommand
+};
+
+return await rootCommand.InvokeAsync(args).ConfigureAwait(false);

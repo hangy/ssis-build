@@ -50,6 +50,7 @@ internal static class BuildCommandFactory
             workingFolderOption,
             projectPathOption,
             configurationOption,
+            outputFolderOption,
             protectionLevelOption,
             passwordOption,
             newPasswordOption,

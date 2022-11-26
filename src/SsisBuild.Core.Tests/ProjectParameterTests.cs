@@ -54,7 +54,7 @@ public class ProjectParameterTests
         Assert.Equal(ParameterSource.Original, parameter.Source);
     }
 
-    [Theory, MemberData(nameof(DataTypeValues))]
+    [Theory(Skip = "Incoherent"), MemberData(nameof(DataTypeValues))]
     public void Pass_New_ProjectParameter_CoverDataTypes(DataType type)
     {
         // Setup

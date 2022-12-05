@@ -28,7 +28,7 @@ jobs:
         dotnet-version: 7.0.x
 
     - name: Restore packages
-      run: dotnet restore $env:Solution_Nam
+      run: dotnet restore $env:Solution_Name
       
     - name: Build solution
       run: dotnet build $env:Solution_Name --configuration $env:Configuration --no-restore

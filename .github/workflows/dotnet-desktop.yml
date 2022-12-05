@@ -28,16 +28,16 @@ jobs:
         dotnet-version: 7.0.x
 
     - name: Restore packages
-      run: dotnet restore $env:Solution_Name
+      run: dotnet restore $Solution_Name
       
     - name: Build solution
-      run: dotnet build $env:Solution_Name --configuration $env:Configuration --no-restore
+      run: dotnet build $Solution_Name --configuration $Configuration --no-restore
 
     - name: Execute unit tests
-      run: dotnet test $env:Solution_Name --configuration $env:Configuration --no-build
+      run: dotnet test $Solution_Name --configuration $Configuration --no-build
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
         name: NuGet Package
-        path: src/SsisTool/bi/$env:Configuration/*.nupkg
+        path: src/SsisTool/bin/$Configuration/*.nupkg

@@ -1,0 +1,43 @@
+name: .NET Core Desktop
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    env:
+      Solution_Name: src\ssis-build.sln
+      Configuration: Release
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+
+    - name: Restore packages
+      run: dotnet restore $env:Solution_Name --configuration $env:Configuration
+      
+    - name: Build solution
+      run: dotnet build $env:Solution_Name --configuration $env:Configuration --no-restore
+
+    - name: Execute unit tests
+      run: dotnet test $env:Solution_Name --configuration $env:Configuration --no-build
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: NuGet Package
+        path: src\SsisTool\bin\$env:Configuration\*.nupkg

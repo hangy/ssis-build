@@ -40,4 +40,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: NuGet Package
-        path: src\SsisTool\bin\$env:Configuration\*.nupkg
+        path: src\SsisTool\bin\${{ env.Configuration }}\*.nupkg

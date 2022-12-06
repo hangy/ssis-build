@@ -69,24 +69,6 @@ public class PackageTests : IDisposable
     }
 
     [Fact]
-    public void Fail_NoProtectionLevel()
-    {
-        // Setup
-        var xml = XmlGenerators.PackageFile(Fakes.RandomString(), 1000, Fakes.RandomString());
-        xml = xml.Replace("DTS:ProtectionLevel=\"1000\"", "");
-        var path = Path.Combine(_workingFolder, Guid.NewGuid().ToString("N"));
-        File.WriteAllText(path, xml);
-
-        // Execute
-        var package = new Package();
-        var exception = Record.Exception(() => package.Initialize(path, null));
-
-        // Assert
-        Assert.NotNull(exception);
-        Assert.IsType<InvalidXmlException>(exception);
-    }
-
-    [Fact]
     public void Fail_UnparsableProtectionLevel()
     {
         // Setup

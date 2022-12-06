@@ -139,7 +139,6 @@ public class ProjectManifestTests : IDisposable
 
     [Theory]
     [InlineData(ProtectionLevel.EncryptAllWithUserKey)]
-    [InlineData(ProtectionLevel.EncryptSensitiveWithUserKey)]
     public void Fail_UserKeyProtectionLevel(ProtectionLevel protectionLevel)
     {
         // Setup
@@ -477,7 +476,7 @@ public class ProjectManifestTests : IDisposable
 
     public static IEnumerable<object[]> ParameterData()
     {
-        var protectionLevels = new[] { ProtectionLevel.DontSaveSensitive, ProtectionLevel.EncryptSensitiveWithPassword, ProtectionLevel.EncryptAllWithPassword };
+        var protectionLevels = new[] { ProtectionLevel.DontSaveSensitive, ProtectionLevel.EncryptSensitiveWithUserKey, ProtectionLevel.EncryptSensitiveWithPassword, ProtectionLevel.EncryptAllWithPassword };
 
         var testsCount = Fakes.RandomInt(1, 20);
         for (var cnt = 0; cnt < testsCount; cnt++)

@@ -45,3 +45,7 @@ jobs:
       with:
         name: NuGet Package
         path: src\SsisTool\bin\${{ env.Configuration }}\*.nupkg
+
+    - name: Push Package to NuGet.org
+      if: github.ref == 'refs/heads/main'
+      run: dotnet nuget push src\SsisTool\bin\${{ env.Configuration }}\*.nupkg -k ${{ secrets.NUGET_ORG_API_KEY }} -s https://api.nuget.org/v3/index.json

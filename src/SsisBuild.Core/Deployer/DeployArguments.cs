@@ -18,12 +18,10 @@ namespace SsisBuild.Core.Deployer;
 
 public class DeployArguments : IDeployArguments
 {
-    public DeployArguments(string workingFolder, string deploymentFilePath, string serverInstance, string catalog, string folder, string projectName, string projectPassword, bool eraseSensitiveInfo, string serverInstanceUserID, string serverInstancePassword)
+    public DeployArguments(string workingFolder, string deploymentFilePath, string connectionString, string catalog, string folder, string projectName, string projectPassword, bool eraseSensitiveInfo)
     {
         DeploymentFilePath = deploymentFilePath;
-        ServerInstance = serverInstance;
-        ServerInstanceUserID = serverInstanceUserID;
-        ServerInstancePassword = serverInstancePassword;
+        ConnectionString = connectionString;
         Catalog = catalog;
         Folder = folder;
         ProjectName = projectName;
@@ -33,15 +31,12 @@ public class DeployArguments : IDeployArguments
 
         Validate();
     }
+
     public string WorkingFolder { get; }
 
     public string DeploymentFilePath { get; }
 
-    public string ServerInstance { get; }
-
-    public string ServerInstanceUserID { get; }
-
-    public string ServerInstancePassword { get; }
+    public string ConnectionString { get; }
 
     public string Catalog { get; }
 
@@ -55,16 +50,10 @@ public class DeployArguments : IDeployArguments
 
     public void Validate()
     {
-        if (string.IsNullOrWhiteSpace(ServerInstance))
-            throw new MissingRequiredArgumentException(nameof(ServerInstance));
+        if (string.IsNullOrWhiteSpace(ConnectionString))
+            throw new MissingRequiredArgumentException(nameof(ConnectionString));
 
         if (string.IsNullOrWhiteSpace(Folder))
             throw new MissingRequiredArgumentException(nameof(Folder));
-
-        if (string.IsNullOrWhiteSpace(ServerInstancePassword) && !string.IsNullOrWhiteSpace(ServerInstanceUserID))
-            throw new MissingRequiredArgumentException(nameof(ServerInstancePassword));
-
-        if (string.IsNullOrWhiteSpace(ServerInstanceUserID) && !string.IsNullOrWhiteSpace(ServerInstancePassword))
-            throw new MissingRequiredArgumentException(nameof(ServerInstanceUserID));
     }
 }

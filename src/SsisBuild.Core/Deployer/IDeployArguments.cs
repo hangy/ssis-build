@@ -20,9 +20,7 @@ public interface IDeployArguments
 {
     string WorkingFolder { get; }
     string DeploymentFilePath { get; }
-    string ServerInstance { get; }
-    string ServerInstanceUserID { get; }
-    string ServerInstancePassword { get; }
+    string ConnectionString { get; }
     string Catalog { get; }
     string Folder { get; }
     string ProjectName { get; }

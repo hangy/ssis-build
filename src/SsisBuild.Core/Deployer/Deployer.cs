@@ -75,32 +75,23 @@ public class Deployer : IDeployer
             new DeployArguments(
                 deployArguments.WorkingFolder,
                 deploymentFilePath,
-                deployArguments.ServerInstance,
+                deployArguments.ConnectionString,
                 catalog, deployArguments.Folder,
                 projectName,
                 deployArguments.ProjectPassword,
-                deployArguments.EraseSensitiveInfo,
-                deployArguments.ServerInstanceUserID,
-                deployArguments.ServerInstancePassword
+                deployArguments.EraseSensitiveInfo
             ),
             parametersToDeploy,
             deploymentProtectionLevel);
 
-        var connectionString = new SqlConnectionStringBuilder()
+        var connectionString = new SqlConnectionStringBuilder(deployArguments.ConnectionString)
         {
             ApplicationName = "SSIS Deploy",
-            DataSource = deployArguments.ServerInstance,
-            InitialCatalog = catalog
         };
 
-        if (string.IsNullOrWhiteSpace(deployArguments.ServerInstanceUserID))
+        if (string.IsNullOrWhiteSpace(connectionString.InitialCatalog))
         {
-            connectionString.IntegratedSecurity = true;
-        }
-        else
-        {
-            connectionString.UserID = deployArguments.ServerInstanceUserID;
-            connectionString.Password = deployArguments.ServerInstancePassword;
+            connectionString.InitialCatalog = catalog;
         }
 
         using (var zipStream = new MemoryStream())
@@ -124,7 +115,7 @@ public class Deployer : IDeployer
         _logger.LogMessage("Starting SSIS Project deployment with the following parameters:");
         _logger.LogMessage("");
         _logger.LogMessage($"Project path:         {deployArguments.DeploymentFilePath}.");
-        _logger.LogMessage($"Target SQL Server:    {deployArguments.ServerInstance}");
+        _logger.LogMessage($"Target SQL Server:    {new SqlConnectionStringBuilder(deployArguments.ConnectionString).DataSource}");
         _logger.LogMessage($"Target IS Catalog:    {deployArguments.Catalog}");
         _logger.LogMessage($"Target Project Name:  {deployArguments.ProjectName}");
         _logger.LogMessage($"Protection Level:     {deploymentProtectionLevel:G}");

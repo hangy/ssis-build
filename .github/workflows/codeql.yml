@@ -2,9 +2,9 @@ name: "CodeQL"
 
 on:
   push:
-    branches: ["develop", "main"]
+    branches: ["develop"]
   pull_request:
-    branches: ["develop", "main"]
+    branches: ["develop"]
   schedule:
     - cron: "44 7 * * 3"
 
@@ -16,10 +16,6 @@ jobs:
       actions: read
       contents: read
       security-events: write
-
-    env:
-      Solution_Name: src\ssis-build.sln
-      Configuration: Release
 
     strategy:
       fail-fast: false
@@ -35,23 +31,8 @@ jobs:
         with:
           languages: ${{ matrix.language }}
 
-      - name: Install .NET Core
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: 7.0.x
-
-      - uses: dotnet/nbgv@v0.4.0
-        with:
-          setAllVars: true
-
-      - name: Restore packages
-        run: dotnet restore $env:Solution_Name
-
-      - name: Build solution
-        run: dotnet build $env:Solution_Name --configuration $env:Configuration --no-restore
-
-      - name: Execute unit tests
-        run: dotnet test $env:Solution_Name --configuration $env:Configuration --no-build
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2

@@ -8,11 +8,11 @@ This is a port of [ssis-build](https://github.com/rtumaykin/ssis-build) as a dot
 
 Command line utility that builds a deployment package from a Visual Studio Project File
 
-### Syntax
+### Build Syntax
 
-`ssisbuild [Project File] -Configuration <Value> [-OutputFolder <Value>] [-ProtectionLevel <Value>] [-Password <Value>] [-NewPassword <Value>] [-ReleaseNotes <Value>] [-Parameter:<Name> <Value>] [...[-Parameter:<Name> <Value>]]`
+`dotnet ssis build --project [Project File] --configuration <Value> [--output-folder <Value>] [--protection-level <Value>] [--password <Value>] [--new-password <Value>] [--release-notes <Value>] [--parameter '{"Name":"Value"}']`
 
-### Switches
+### Build Switches
 
 - **--project:**
   Full path to a SSIS project file (with dtproj extension). If a project file is not specified, ssisbuild searches current working directory for a file with dtproj extension and uses that file.
@@ -50,17 +50,17 @@ Command line utility that builds a deployment package from a Visual Studio Proje
 
 A command line utility that deploys an SSIS deployment package to an SSIS catalog.
 
-### Syntax
+### Deployment Syntax
 
-`dotnet ssis deploy [Ispac File] --server <ServerInstanceName> --catalog <CatalogName> --folder <FolderName> --project <ProjectName> [--password <ProjectPassword>] [--erase-sensitive-info]`
+`dotnet ssis deploy [Ispac File] --connection <ConnectionString> --catalog <CatalogName> --folder <FolderName> --project <ProjectName> [--password <ProjectPassword>] [--erase-sensitive-info]`
 
-### Switches
+### Deployment Switches
 
 - **Ispac File:**
   Full path to an SSIS deployment file (with ispac extension). If a deployment file is not specified, ssisdeploy searches current working directory for a file with ispac extension and uses that file.
 
-- **--server:**
-  Required. Full Name of the target SQL Server instance.
+- **--connection:**
+  Required. Full connection string of the target SQL Server instance.
 
 - **--catalog:**
   Name of the SSIS Catalog on the target server. If not supplied, then SSISDB value is used.
@@ -79,7 +79,7 @@ A command line utility that deploys an SSIS deployment package to an SSIS catalo
 
 ### Example
 
-`ssisdeploy.exe sample.ispac -ServerInstance dbserver\\instance -Catalog SSISDB -Folder SampleFolder -ProjectName Sample -ProjectPassword xyz -EraseSensitiveInfo`
+`dotnet ssis deploy sample.ispac --connection "Data Source=dbserver\\instance;Integrated Security=True;" --catalog SSISDB --folder SampleFolder --project Sample --password xyz --erase-sensitive-info`
 
 ## Sample Build PowerShell Script
 

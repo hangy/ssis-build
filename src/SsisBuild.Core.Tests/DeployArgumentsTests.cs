@@ -28,9 +28,7 @@ public class DeployArgumentsTests
         // Setup
         var workingFolder = Fakes.RandomString();
         var deploymentFilePath = Fakes.RandomString();
-        var serverInstance = Fakes.RandomString();
-        var serverInstanceUserID = Fakes.RandomString();
-        var serverInstancePassword = Fakes.RandomString();
+        var connectionString = Fakes.RandomString();
         var catalog = Fakes.RandomString();
         var folder = Fakes.RandomString();
         var projectName = Fakes.RandomString();
@@ -39,14 +37,12 @@ public class DeployArgumentsTests
 
 
         // Execute
-        var deployArguments = new DeployArguments(workingFolder, deploymentFilePath, serverInstance, catalog, folder, projectName, projectPassword, eraseSensitiveInfo, serverInstanceUserID, serverInstancePassword);
+        var deployArguments = new DeployArguments(workingFolder, deploymentFilePath, connectionString, catalog, folder, projectName, projectPassword, eraseSensitiveInfo);
 
         // Assert
         Assert.Equal(workingFolder, deployArguments.WorkingFolder);
         Assert.Equal(deploymentFilePath, deployArguments.DeploymentFilePath);
-        Assert.Equal(serverInstance, deployArguments.ServerInstance);
-        Assert.Equal(serverInstanceUserID, deployArguments.ServerInstanceUserID);
-        Assert.Equal(serverInstancePassword, deployArguments.ServerInstancePassword);
+        Assert.Equal(connectionString, deployArguments.ConnectionString);
         Assert.Equal(catalog, deployArguments.Catalog);
         Assert.Equal(folder, deployArguments.Folder);
         Assert.Equal(projectName, deployArguments.ProjectName);
@@ -55,17 +51,17 @@ public class DeployArgumentsTests
     }
 
     [Fact]
-    public void Fail_New_MissingServerInstance()
+    public void Fail_New_MissingConnectionString()
     {
         // Setup
 
         // Execute
-        var exception = Record.Exception(() => new DeployArguments(null, null, null, Fakes.RandomString(), Fakes.RandomString(), Fakes.RandomString(), null, Fakes.RandomBool(), null, null));
+        var exception = Record.Exception(() => new DeployArguments(null, null, null, Fakes.RandomString(), Fakes.RandomString(), Fakes.RandomString(), null, Fakes.RandomBool()));
 
         // Assert
         Assert.NotNull(exception);
         Assert.IsType<MissingRequiredArgumentException>(exception);
-        Assert.True(((MissingRequiredArgumentException)exception).MissingArgument == nameof(DeployArguments.ServerInstance));
+        Assert.True(((MissingRequiredArgumentException)exception).MissingArgument == nameof(DeployArguments.ConnectionString));
     }
 
     [Fact]
@@ -74,7 +70,7 @@ public class DeployArgumentsTests
         // Setup
 
         // Execute
-        var exception = Record.Exception(() => new DeployArguments(null, null, Fakes.RandomString(), Fakes.RandomString(), null, Fakes.RandomString(), null, Fakes.RandomBool(), null, null));
+        var exception = Record.Exception(() => new DeployArguments(null, null, Fakes.RandomString(), Fakes.RandomString(), null, Fakes.RandomString(), null, Fakes.RandomBool()));
 
         // Assert
         Assert.NotNull(exception);

@@ -22,6 +22,7 @@ using System.Linq;
 public class Fakes
 {
     private static readonly Random Random = new Random();
+
     public static string RandomString(int minLength = 10, int maxLength = 100)
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -43,5 +44,10 @@ public class Fakes
     public static int RandomInt(int min = int.MinValue, int max = int.MaxValue)
     {
         return Random.Next(min, max);
+    }
+
+    public static string RandomConnectionString()
+    {
+        return $"Data Source={RandomString()};Initial Catalog={RandomString()};Integrated Security={RandomBool()};";
     }
 }

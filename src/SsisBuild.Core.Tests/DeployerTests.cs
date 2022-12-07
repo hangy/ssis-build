@@ -64,11 +64,10 @@ public class DeployerTests : IDisposable
         _deployArgumentsMock.Setup(d => d.ProjectName).Returns(Fakes.RandomString());
         _deployArgumentsMock.Setup(d => d.ProjectPassword).Returns(Fakes.RandomString());
         _deployArgumentsMock.Setup(d => d.EraseSensitiveInfo).Returns(Fakes.RandomBool());
-        _deployArgumentsMock.Setup(d => d.ServerInstance).Returns(Fakes.RandomString());
+        _deployArgumentsMock.Setup(d => d.ConnectionString).Returns(Fakes.RandomConnectionString());
         _deployArgumentsMock.Setup(d => d.WorkingFolder).Returns(Fakes.RandomString());
 
-        string passedCatalog = null;
-        string passedServerInstance = null;
+        string passedConnectionString = null;
         string passedFolder = null;
         string passedProjectName = null;
         bool? passedEraseSensitiveInfo = null;
@@ -79,9 +78,7 @@ public class DeployerTests : IDisposable
                 (string connectionString, string folderName, string projectName, bool eraseSensitiveInfo, IDictionary<string, SensitiveParameter> parametersToDeploy,
                     MemoryStream projectStream) =>
                 {
-                    var sb = new SqlConnectionStringBuilder(connectionString);
-                    passedCatalog = sb.InitialCatalog;
-                    passedServerInstance = sb.DataSource;
+                    passedConnectionString = connectionString;
 
                     passedFolder = folderName;
                     passedProjectName = projectName;
@@ -98,8 +95,7 @@ public class DeployerTests : IDisposable
 
         // Assert
         _loggerMock.Verify(m => m.LogMessage(It.IsAny<string>()));
-        Assert.Equal(_deployArgumentsMock.Object.Catalog, passedCatalog);
-        Assert.Equal(_deployArgumentsMock.Object.ServerInstance, passedServerInstance);
+        Assert.Equal($"{_deployArgumentsMock.Object.ConnectionString}Application Name=\"SSIS Deploy\"", passedConnectionString);
         Assert.Equal(_deployArgumentsMock.Object.Folder, passedFolder);
         Assert.Equal(_deployArgumentsMock.Object.ProjectName, passedProjectName);
         Assert.NotNull(passedEraseSensitiveInfo);
@@ -124,7 +120,7 @@ public class DeployerTests : IDisposable
         _deployArgumentsMock.Setup(d => d.ProjectName).Returns(Fakes.RandomString());
         _deployArgumentsMock.Setup(d => d.ProjectPassword).Returns(Fakes.RandomString());
         _deployArgumentsMock.Setup(d => d.EraseSensitiveInfo).Returns(Fakes.RandomBool());
-        _deployArgumentsMock.Setup(d => d.ServerInstance).Returns(Fakes.RandomString());
+        _deployArgumentsMock.Setup(d => d.ConnectionString).Returns(Fakes.RandomConnectionString());
         _deployArgumentsMock.Setup(d => d.WorkingFolder).Returns(_workingFolder);
 
         var realDeploymentFilePath = Path.Combine(_workingFolder, $"{Fakes.RandomString()}.ispac");
@@ -157,7 +153,7 @@ public class DeployerTests : IDisposable
         _deployArgumentsMock.Setup(d => d.ProjectName).Returns(Fakes.RandomString());
         _deployArgumentsMock.Setup(d => d.ProjectPassword).Returns(Fakes.RandomString());
         _deployArgumentsMock.Setup(d => d.EraseSensitiveInfo).Returns(Fakes.RandomBool());
-        _deployArgumentsMock.Setup(d => d.ServerInstance).Returns(Fakes.RandomString());
+        _deployArgumentsMock.Setup(d => d.ConnectionString).Returns(Fakes.RandomString());
         _deployArgumentsMock.Setup(d => d.WorkingFolder).Returns(_workingFolder);
 
         var deployer = new Deployer(_loggerMock.Object, _projectMock.Object, _catalogToolsMock.Object);
@@ -196,7 +192,7 @@ public class DeployerTests : IDisposable
         _deployArgumentsMock.Setup(d => d.ProjectName).Returns(Fakes.RandomString());
         _deployArgumentsMock.Setup(d => d.ProjectPassword).Returns(Fakes.RandomString());
         _deployArgumentsMock.Setup(d => d.EraseSensitiveInfo).Returns(Fakes.RandomBool());
-        _deployArgumentsMock.Setup(d => d.ServerInstance).Returns(Fakes.RandomString());
+        _deployArgumentsMock.Setup(d => d.ConnectionString).Returns(Fakes.RandomConnectionString());
         _deployArgumentsMock.Setup(d => d.WorkingFolder).Returns(Fakes.RandomString());
 
         _catalogToolsMock.Setup(c => c.DeployProject(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<IDictionary<string, SensitiveParameter>>(), It.IsAny<MemoryStream>()))

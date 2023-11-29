@@ -2,14 +2,13 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
     <Description>Implementation of core methods of working with dtproj and ispac files</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.1" />
-    <PackageReference Include="System.IO.Packaging" Version="7.0.0" />
-    <PackageReference Include="System.Security.Cryptography.Xml" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" />
+    <PackageReference Include="System.IO.Packaging" />
+    <PackageReference Include="System.Security.Cryptography.Xml" />
   </ItemGroup>
 
   <ItemGroup>

@@ -10,8 +10,8 @@
 Added SsisDeploy application which is capable of deploying any ispac deployment packages
 Added unit tests with 100% code coverage
 Removed SensitiveParameter Build Argument because it was causing runtime issues</PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/rtumaykin/ssis-build/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/rtumaykin/ssis-build/</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/hangy/ssis-build/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/hangy/ssis-build/</RepositoryUrl>
     <Title>SSIS Build</Title>
     <Description>A command line utility that builds an ispac file from a Visual Studio SSIS project (project deployment model only)</Description>
   </PropertyGroup>

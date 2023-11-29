@@ -1,5 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project>
+  <PropertyGroup>
+    <LangVersion>preview</LangVersion>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
 
   <PropertyGroup>
     <Company>Roman Tumaykin</Company>
@@ -10,8 +18,8 @@
 Added SsisDeploy application which is capable of deploying any ispac deployment packages
 Added unit tests with 100% code coverage
 Removed SensitiveParameter Build Argument because it was causing runtime issues</PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/rtumaykin/ssis-build/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/rtumaykin/ssis-build/</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/hangy/ssis-build/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/hangy/ssis-build/</RepositoryUrl>
     <Title>SSIS Build</Title>
     <Description>A command line utility that builds an ispac file from a Visual Studio SSIS project (project deployment model only)</Description>
   </PropertyGroup>
@@ -19,7 +27,24 @@ Removed SensitiveParameter Build Argument because it was causing runtime issues<
   <ItemGroup>
     <PackageReference Include="Nerdbank.GitVersioning" Condition="!Exists('packages.config')">
       <PrivateAssets>all</PrivateAssets>
-      <Version>3.5.119</Version>
+    </PackageReference>
+  </ItemGroup>
+
+  <PropertyGroup Condition="$(ProjectName.EndsWith('Tests'))">
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(ProjectName.EndsWith('Tests'))">
+    <PackageReference Include="Moq" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
 

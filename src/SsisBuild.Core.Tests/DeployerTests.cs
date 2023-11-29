@@ -31,13 +31,14 @@ using Xunit;
 
 public class DeployerTests : IDisposable
 {
-
     private readonly Mock<IProject> _projectMock;
     private readonly Mock<ICatalogTools> _catalogToolsMock;
     private readonly Mock<IDeployArguments> _deployArgumentsMock;
     private readonly Mock<ILogger> _loggerMock;
 
     private readonly string _workingFolder;
+
+    private bool _disposed;
 
     public DeployerTests()
     {
@@ -228,9 +229,19 @@ public class DeployerTests : IDisposable
         }
         return parameters;
     }
-
+    
     public void Dispose()
     {
-        Directory.Delete(_workingFolder, true);
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing && !_disposed)
+        {
+            Directory.Delete(_workingFolder, true);
+            _disposed = true;
+        }
     }
 }

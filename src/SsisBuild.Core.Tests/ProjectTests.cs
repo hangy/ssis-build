@@ -30,7 +30,9 @@ using Xunit;
 
 public class ProjectTests : IDisposable
 {
-    private string _workingFolder;
+    private readonly string _workingFolder;
+
+    private bool _disposed;
 
     public ProjectTests()
     {
@@ -552,6 +554,16 @@ public class ProjectTests : IDisposable
 
     public void Dispose()
     {
-        Directory.Delete(_workingFolder, true);
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool diposing)
+    {
+        if (diposing && !_disposed)
+        {
+            Directory.Delete(_workingFolder, true);
+            _disposed = true;
+        }
     }
 }

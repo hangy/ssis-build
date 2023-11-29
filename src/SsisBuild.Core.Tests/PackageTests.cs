@@ -28,6 +28,8 @@ public class PackageTests : IDisposable
 {
     private readonly string _workingFolder;
 
+    private bool _disposed;
+
     public PackageTests()
     {
         _workingFolder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
@@ -104,7 +106,7 @@ public class PackageTests : IDisposable
         {
             package.Save(stream, ProtectionLevel.EncryptSensitiveWithPassword, password);
             stream.Position = 0;
-            var sr = new StreamReader(stream);
+            using var sr = new StreamReader(stream);
             encryptedXml = sr.ReadToEnd();
         }
         var xmlDoc = new XmlDocument();
@@ -212,7 +214,7 @@ public class PackageTests : IDisposable
             package.Save(stream, ProtectionLevel.EncryptSensitiveWithPassword, password);
             stream.Position = 0;
 
-            var sr = new StreamReader(stream);
+            using var sr = new StreamReader(stream);
             encryptedXml = sr.ReadToEnd();
         }
 
@@ -266,7 +268,7 @@ public class PackageTests : IDisposable
             package.Save(stream, ProtectionLevel.EncryptSensitiveWithPassword, password);
             stream.Position = 0;
 
-            var sr = new StreamReader(stream);
+            using var sr = new StreamReader(stream);
             encryptedXml = sr.ReadToEnd();
         }
 
@@ -320,7 +322,7 @@ public class PackageTests : IDisposable
             package.Save(stream, ProtectionLevel.EncryptSensitiveWithPassword, password);
             stream.Position = 0;
 
-            var sr = new StreamReader(stream);
+            using var sr = new StreamReader(stream);
             encryptedXml = sr.ReadToEnd();
         }
 
@@ -374,7 +376,7 @@ public class PackageTests : IDisposable
             package.Save(stream, ProtectionLevel.EncryptSensitiveWithPassword, password);
             stream.Position = 0;
 
-            var sr = new StreamReader(stream);
+            using var sr = new StreamReader(stream);
             encryptedXml = sr.ReadToEnd();
         }
 
@@ -408,6 +410,16 @@ public class PackageTests : IDisposable
 
     public void Dispose()
     {
-        Directory.Delete(_workingFolder, true);
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing && !_disposed)
+        {
+            Directory.Delete(_workingFolder, true);
+            _disposed = true;
+        }
     }
 }

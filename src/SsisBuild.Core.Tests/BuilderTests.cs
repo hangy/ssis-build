@@ -31,23 +31,16 @@ using Xunit;
 
 public class BuilderTests : IDisposable
 {
-    private class TestBuildParameterUpdateResult
-    {
-        public string Name { get; set; }
-        public string Value { get; set; }
-        public ParameterSource Source { get; set; }
-    }
+    private record struct TestBuildParameterUpdateResult(string Name, string Value, ParameterSource Source);
 
-    private class TestBuildParameterUpdateInput
-    {
-        public string Name { get; set; }
-        public string Value { get; set; }
-    }
+    private record struct TestBuildParameterUpdateInput(string Name, string Value);
 
     private readonly Mock<IProject> _projectMock;
     private readonly Mock<IBuildArguments> _buildArgumentsMock;
     private readonly string _workingFolder;
     private readonly Mock<ILogger> _loggerMock;
+
+    private bool _disposed;
 
     public BuilderTests()
     {
@@ -497,6 +490,16 @@ public class BuilderTests : IDisposable
 
     public void Dispose()
     {
-        Directory.Delete(_workingFolder, true);
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing && !_disposed)
+        {
+            Directory.Delete(_workingFolder, true);
+            _disposed = true;
+        }
     }
 }

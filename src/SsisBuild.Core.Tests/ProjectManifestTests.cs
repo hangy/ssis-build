@@ -111,7 +111,7 @@ public class ProjectManifestTests : IDisposable
             stream.Flush();
             stream.Position = 0;
 
-            var sr = new StreamReader(stream);
+            using var sr = new StreamReader(stream);
             savedXml = sr.ReadToEnd();
         }
 
@@ -376,7 +376,7 @@ public class ProjectManifestTests : IDisposable
             stream.Flush();
             stream.Position = 0;
 
-            var sr = new StreamReader(stream);
+            using var sr = new StreamReader(stream);
             savedXml = sr.ReadToEnd();
         }
         var testXmlDoc = new XmlDocument();

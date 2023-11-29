@@ -25,13 +25,16 @@ using System.IO;
 using System.Xml;
 using Xunit;
 
-internal class ProjectFileImpl : ProjectFile
+internal sealed class ProjectFileImpl : ProjectFile
 {
     public XmlDocument FileXmlDocumentPublic => FileXmlDocument;
 }
+
 public class ProjectFileTests : IDisposable
 {
     private readonly string _workingFolder;
+
+    private bool _disposed;
 
     public ProjectFileTests()
     {
@@ -65,7 +68,8 @@ public class ProjectFileTests : IDisposable
         {
             projectFile.Save(stream, ProtectionLevel.EncryptSensitiveWithPassword, password);
             stream.Position = 0;
-            var sr = new StreamReader(stream);
+
+            using var sr = new StreamReader(stream);
             encryptedXml = sr.ReadToEnd();
         }
         var xmlDoc = new XmlDocument();
@@ -102,7 +106,8 @@ public class ProjectFileTests : IDisposable
             // Save with DontSaveSensitive
             projectFile.Save(stream);
             stream.Position = 0;
-            var sr = new StreamReader(stream);
+            
+            using var sr = new StreamReader(stream);
             encryptedXml = sr.ReadToEnd();
         }
 
@@ -339,7 +344,7 @@ public class ProjectFileTests : IDisposable
             projectFile.Save(stream, ProtectionLevel.EncryptSensitiveWithPassword, password);
             stream.Position = 0;
 
-            var sr = new StreamReader(stream);
+            using var sr = new StreamReader(stream);
             encryptedXml = sr.ReadToEnd();
         }
 
@@ -393,7 +398,7 @@ public class ProjectFileTests : IDisposable
             projectFile.Save(stream, ProtectionLevel.EncryptSensitiveWithPassword, password);
             stream.Position = 0;
 
-            var sr = new StreamReader(stream);
+            using var sr = new StreamReader(stream);
             encryptedXml = sr.ReadToEnd();
         }
 
@@ -447,7 +452,7 @@ public class ProjectFileTests : IDisposable
             projectFile.Save(stream, ProtectionLevel.EncryptSensitiveWithPassword, password);
             stream.Position = 0;
 
-            var sr = new StreamReader(stream);
+            using var sr = new StreamReader(stream);
             encryptedXml = sr.ReadToEnd();
         }
 
@@ -503,7 +508,7 @@ public class ProjectFileTests : IDisposable
             projectFile.Save(stream, ProtectionLevel.EncryptSensitiveWithPassword, password);
             stream.Position = 0;
 
-            var sr = new StreamReader(stream);
+            using var sr = new StreamReader(stream);
             encryptedXml = sr.ReadToEnd();
         }
 
@@ -559,7 +564,7 @@ public class ProjectFileTests : IDisposable
             projectFile.Save(stream, ProtectionLevel.EncryptSensitiveWithPassword, password);
             stream.Position = 0;
 
-            var sr = new StreamReader(stream);
+            using var sr = new StreamReader(stream);
             encryptedXml = sr.ReadToEnd();
         }
 
@@ -613,7 +618,7 @@ public class ProjectFileTests : IDisposable
             projectFile.Save(stream, ProtectionLevel.EncryptSensitiveWithPassword, password);
             stream.Position = 0;
 
-            var sr = new StreamReader(stream);
+            using var sr = new StreamReader(stream);
             encryptedXml = sr.ReadToEnd();
         }
 
@@ -664,7 +669,7 @@ public class ProjectFileTests : IDisposable
             projectFile.Save(stream, ProtectionLevel.EncryptSensitiveWithPassword, password);
             stream.Position = 0;
 
-            var sr = new StreamReader(stream);
+            using var sr = new StreamReader(stream);
             encryptedXml = sr.ReadToEnd();
         }
 
@@ -686,8 +691,19 @@ public class ProjectFileTests : IDisposable
         Assert.NotNull(exception);
         Assert.IsType<InvalidPaswordException>(exception);
     }
+
     public void Dispose()
     {
-        Directory.Delete(_workingFolder, true);
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing && !_disposed)
+        {
+            Directory.Delete(_workingFolder, true);
+            _disposed = true;
+        }
     }
 }

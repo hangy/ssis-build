@@ -2,14 +2,12 @@ name: .NET Core Desktop
 
 on:
   push:
-    branches: [ "develop", "main" ]
+    branches: ["develop", "main"]
   pull_request:
-    branches: [ "develop", "main" ]
+    branches: ["develop", "main"]
 
 jobs:
-
   build:
-
     runs-on: windows-latest
 
     env:
@@ -17,35 +15,35 @@ jobs:
       Configuration: Release
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 8.0.x
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
 
-    - uses: dotnet/nbgv@v0.4.0
-      with:
-        setAllVars: true
+      - uses: dotnet/nbgv@v0.4.1
+        with:
+          setAllVars: true
 
-    - name: Restore packages
-      run: dotnet restore $env:Solution_Name
-      
-    - name: Build solution
-      run: dotnet build $env:Solution_Name --configuration $env:Configuration --no-restore
+      - name: Restore packages
+        run: dotnet restore $env:Solution_Name
 
-    - name: Execute unit tests
-      run: dotnet test $env:Solution_Name --configuration $env:Configuration --no-build
+      - name: Build solution
+        run: dotnet build $env:Solution_Name --configuration $env:Configuration --no-restore
 
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: NuGet Package
-        path: src\SsisTool\bin\${{ env.Configuration }}\*.nupkg
+      - name: Execute unit tests
+        run: dotnet test $env:Solution_Name --configuration $env:Configuration --no-build
 
-    - name: Push Package to NuGet.org
-      if: github.ref == 'refs/heads/main'
-      run: dotnet nuget push src\SsisTool\bin\${{ env.Configuration }}\*.nupkg -k ${{ secrets.NUGET_ORG_API_KEY }} -s https://api.nuget.org/v3/index.json
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: NuGet Package
+          path: src\SsisTool\bin\${{ env.Configuration }}\*.nupkg
+
+      - name: Push Package to NuGet.org
+        if: github.ref == 'refs/heads/main'
+        run: dotnet nuget push src\SsisTool\bin\${{ env.Configuration }}\*.nupkg -k ${{ secrets.NUGET_ORG_API_KEY }} -s https://api.nuget.org/v3/index.json

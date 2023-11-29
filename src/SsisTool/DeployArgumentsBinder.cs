@@ -7,7 +7,7 @@ using System.CommandLine;
 using System.CommandLine.Binding;
 using System.IO;
 
-internal class DeployArgumentsBinder : BinderBase<DeployArguments>
+internal sealed class DeployArgumentsBinder : BinderBase<DeployArguments>
 {
     private readonly Argument<FileInfo> _fileArgument;
 

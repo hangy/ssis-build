@@ -211,7 +211,7 @@ public class DeployerTests : IDisposable
         Assert.Equal("TEST", exception.Message);
     }
 
-    private static IDictionary<string, IParameter> GenerateRandomParameters()
+    private static Dictionary<string, IParameter> GenerateRandomParameters()
     {
         var parameters = new Dictionary<string, IParameter>();
 

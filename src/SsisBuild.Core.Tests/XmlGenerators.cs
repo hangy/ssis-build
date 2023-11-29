@@ -136,8 +136,12 @@ public static class XmlGenerators
 
 
     public static string ProjectManifestFile(ProtectionLevel protectionLevel, int versionMajor, int versionMinor, string versionComments, int versionBuild, string description,
-        string[] packages, string[] connectionManagers, ParameterSetupData[] parameters)
+        IEnumerable<string> packages, IEnumerable<string> connectionManagers, IEnumerable<ParameterSetupData> parameters)
     {
+        ArgumentNullException.ThrowIfNull(packages);
+        ArgumentNullException.ThrowIfNull(connectionManagers);
+        ArgumentNullException.ThrowIfNull(parameters);
+
         return $@"<SSIS:Project SSIS:ProtectionLevel=""{protectionLevel:G}"" xmlns:SSIS=""www.microsoft.com/SqlServer/SSIS"">
 	            <SSIS:Properties>
 	              <SSIS:Property SSIS:Name=""ID"">{Guid.NewGuid():B}</SSIS:Property>
@@ -170,7 +174,7 @@ public static class XmlGenerators
             </SSIS:Project>";
     }
 
-    private static string ProjectManifestFile_PackageMetadata(string packageName, ParameterSetupData[] parameters, int versionMajor, int versionMinor, int versionBuild,
+    private static string ProjectManifestFile_PackageMetadata(string packageName, IEnumerable<ParameterSetupData> parameters, int versionMajor, int versionMinor, int versionBuild,
         string versionComments, ProtectionLevel protectionLevel)
     {
         return $@"<SSIS:PackageMetaData SSIS:Name=""{packageName}.dtsx"">

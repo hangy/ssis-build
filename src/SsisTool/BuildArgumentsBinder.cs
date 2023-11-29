@@ -8,7 +8,7 @@ using System;
 using System.CommandLine;
 using System.CommandLine.Binding;
 
-internal class BuildArgumentsBinder : BinderBase<IBuildArguments>
+internal sealed class BuildArgumentsBinder : BinderBase<IBuildArguments>
 {
     private readonly Option<FileInfo> _projectPathOption;
 

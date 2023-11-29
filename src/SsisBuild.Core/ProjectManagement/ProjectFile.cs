@@ -78,7 +78,7 @@ public abstract class ProjectFile : IProjectFile
 
     protected virtual IList<IParameter> ExtractParameters()
     {
-        return null;
+        return Array.Empty<IParameter>();
     }
 
     private void Load(Stream fileStream)

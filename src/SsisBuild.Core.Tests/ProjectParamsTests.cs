@@ -27,6 +27,8 @@ public class ProjectParamsTests : IDisposable
 {
     private readonly string _workingFolder;
 
+    private bool _disposed;
+
     public ProjectParamsTests()
     {
         _workingFolder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
@@ -60,7 +62,17 @@ public class ProjectParamsTests : IDisposable
 
     public void Dispose()
     {
-        Directory.Delete(_workingFolder, true);
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing && !_disposed)
+        {
+            Directory.Delete(_workingFolder, true);
+            _disposed = true;
+        }
     }
 
     public static IEnumerable<object[]> ParameterData()
@@ -84,6 +96,7 @@ public class ProjectParamsTests : IDisposable
 
             yield return new object[] { paramsData };
         }
+
         yield return new object[] { new List<ParameterSetupData>() };
     }
 }

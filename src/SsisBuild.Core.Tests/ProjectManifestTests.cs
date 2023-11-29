@@ -142,7 +142,7 @@ public class ProjectManifestTests : IDisposable
     public void Fail_UserKeyProtectionLevel(ProtectionLevel protectionLevel)
     {
         // Setup
-        var xml = XmlGenerators.ProjectManifestFile(protectionLevel, 1, 1, Fakes.RandomString(), 1, Fakes.RandomString(), new string[] { }, new string[] { }, new ParameterSetupData[] { });
+        var xml = XmlGenerators.ProjectManifestFile(protectionLevel, 1, 1, Fakes.RandomString(), 1, Fakes.RandomString(), Array.Empty<string>(), Array.Empty<string>(), Array.Empty<ParameterSetupData>());
         var path = Path.Combine(_workingFolder, Guid.NewGuid().ToString("N"));
         File.WriteAllText(path, xml);
 
@@ -160,7 +160,7 @@ public class ProjectManifestTests : IDisposable
     public void Fail_NoVersionMajor()
     {
         // Setup
-        var xml = XmlGenerators.ProjectManifestFile(ProtectionLevel.DontSaveSensitive, 1, 1, Fakes.RandomString(), 1, Fakes.RandomString(), new string[] { }, new string[] { }, new ParameterSetupData[] { });
+        var xml = XmlGenerators.ProjectManifestFile(ProtectionLevel.DontSaveSensitive, 1, 1, Fakes.RandomString(), 1, Fakes.RandomString(), Array.Empty<string>(), Array.Empty<string>(), Array.Empty<ParameterSetupData>());
         var path = Path.Combine(_workingFolder, Guid.NewGuid().ToString("N"));
         var xmlDoc = new XmlDocument();
         xmlDoc.LoadXml(xml);
@@ -183,7 +183,7 @@ public class ProjectManifestTests : IDisposable
     public void Fail_NoVersionMinor()
     {
         // Setup
-        var xml = XmlGenerators.ProjectManifestFile(ProtectionLevel.DontSaveSensitive, 1, 1, Fakes.RandomString(), 1, Fakes.RandomString(), new string[] { }, new string[] { }, new ParameterSetupData[] { });
+        var xml = XmlGenerators.ProjectManifestFile(ProtectionLevel.DontSaveSensitive, 1, 1, Fakes.RandomString(), 1, Fakes.RandomString(), Array.Empty<string>(), Array.Empty<string>(), Array.Empty<ParameterSetupData>());
         var path = Path.Combine(_workingFolder, Guid.NewGuid().ToString("N"));
         var xmlDoc = new XmlDocument();
         xmlDoc.LoadXml(xml);
@@ -206,7 +206,7 @@ public class ProjectManifestTests : IDisposable
     public void Fail_NoVersionBuild()
     {
         // Setup
-        var xml = XmlGenerators.ProjectManifestFile(ProtectionLevel.DontSaveSensitive, 1, 1, Fakes.RandomString(), 1, Fakes.RandomString(), new string[] { }, new string[] { }, new ParameterSetupData[] { });
+        var xml = XmlGenerators.ProjectManifestFile(ProtectionLevel.DontSaveSensitive, 1, 1, Fakes.RandomString(), 1, Fakes.RandomString(), Array.Empty<string>(), Array.Empty<string>(), Array.Empty<ParameterSetupData>());
         var path = Path.Combine(_workingFolder, Guid.NewGuid().ToString("N"));
         var xmlDoc = new XmlDocument();
         xmlDoc.LoadXml(xml);
@@ -230,7 +230,7 @@ public class ProjectManifestTests : IDisposable
     public void Fail_InvalidVersionMajor()
     {
         // Setup
-        var xml = XmlGenerators.ProjectManifestFile(ProtectionLevel.DontSaveSensitive, 1, 1, Fakes.RandomString(), 1, Fakes.RandomString(), new string[] { }, new string[] { }, new ParameterSetupData[] { });
+        var xml = XmlGenerators.ProjectManifestFile(ProtectionLevel.DontSaveSensitive, 1, 1, Fakes.RandomString(), 1, Fakes.RandomString(), Array.Empty<string>(), Array.Empty<string>(), Array.Empty<ParameterSetupData>());
         var path = Path.Combine(_workingFolder, Guid.NewGuid().ToString("N"));
         var xmlDoc = new XmlDocument();
         xmlDoc.LoadXml(xml);
@@ -254,7 +254,7 @@ public class ProjectManifestTests : IDisposable
     public void Fail_InvalidVersionMinor()
     {
         // Setup
-        var xml = XmlGenerators.ProjectManifestFile(ProtectionLevel.DontSaveSensitive, 1, 1, Fakes.RandomString(), 1, Fakes.RandomString(), new string[] { }, new string[] { }, new ParameterSetupData[] { });
+        var xml = XmlGenerators.ProjectManifestFile(ProtectionLevel.DontSaveSensitive, 1, 1, Fakes.RandomString(), 1, Fakes.RandomString(), Array.Empty<string>(), Array.Empty<string>(), Array.Empty<ParameterSetupData>());
         var path = Path.Combine(_workingFolder, Guid.NewGuid().ToString("N"));
         var xmlDoc = new XmlDocument();
         xmlDoc.LoadXml(xml);
@@ -278,13 +278,15 @@ public class ProjectManifestTests : IDisposable
     public void Fail_InvalidVersionBuild()
     {
         // Setup
-        var xml = XmlGenerators.ProjectManifestFile(ProtectionLevel.DontSaveSensitive, 1, 1, Fakes.RandomString(), 1, Fakes.RandomString(), new string[] { }, new string[] { }, new ParameterSetupData[] { });
+        var xml = XmlGenerators.ProjectManifestFile(ProtectionLevel.DontSaveSensitive, 1, 1, Fakes.RandomString(), 1, Fakes.RandomString(), Array.Empty<string>(), Array.Empty<string>(), Array.Empty<ParameterSetupData>());
         var path = Path.Combine(_workingFolder, Guid.NewGuid().ToString("N"));
         var xmlDoc = new XmlDocument();
         xmlDoc.LoadXml(xml);
         var versionBuildNode = xmlDoc.SelectSingleNode("/SSIS:Project/SSIS:Properties/SSIS:Property[@SSIS:Name = \"VersionBuild\"]", xmlDoc.GetNameSpaceManager());
         if (versionBuildNode != null)
-            versionBuildNode.InnerText = Fakes.RandomString(); ;
+        {
+            versionBuildNode.InnerText = Fakes.RandomString();
+        }
 
         File.WriteAllText(path, xmlDoc.OuterXml);
 
@@ -302,7 +304,7 @@ public class ProjectManifestTests : IDisposable
     public void Fail_NoVersionComments()
     {
         // Setup
-        var xml = XmlGenerators.ProjectManifestFile(ProtectionLevel.DontSaveSensitive, 1, 1, Fakes.RandomString(), 1, Fakes.RandomString(), new string[] { }, new string[] { }, new ParameterSetupData[] { });
+        var xml = XmlGenerators.ProjectManifestFile(ProtectionLevel.DontSaveSensitive, 1, 1, Fakes.RandomString(), 1, Fakes.RandomString(), Array.Empty<string>(), Array.Empty<string>(), Array.Empty<ParameterSetupData>());
         var path = Path.Combine(_workingFolder, Guid.NewGuid().ToString("N"));
         var xmlDoc = new XmlDocument();
         xmlDoc.LoadXml(xml);
@@ -325,7 +327,7 @@ public class ProjectManifestTests : IDisposable
     public void Fail_NoDescription()
     {
         // Setup
-        var xml = XmlGenerators.ProjectManifestFile(ProtectionLevel.DontSaveSensitive, 1, 1, Fakes.RandomString(), 1, Fakes.RandomString(), new string[] { }, new string[] { }, new ParameterSetupData[] { });
+        var xml = XmlGenerators.ProjectManifestFile(ProtectionLevel.DontSaveSensitive, 1, 1, Fakes.RandomString(), 1, Fakes.RandomString(), Array.Empty<string>(), Array.Empty<string>(), Array.Empty<ParameterSetupData>());
         var path = Path.Combine(_workingFolder, Guid.NewGuid().ToString("N"));
         var xmlDoc = new XmlDocument();
         xmlDoc.LoadXml(xml);

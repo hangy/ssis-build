@@ -4,3 +4,18 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    groups:
+      testing:
+        patterns:
+          - "Moq.*"
+          - "xunit.*"
+          - "coverlet.*"
+          - "Microsoft.NET.Test.Sdk"
+      Microsoft:
+        patterns:
+          - "Microsoft.*"
+          - "System.*"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"

@@ -129,7 +129,10 @@ public abstract class ProjectFile : IProjectFile
     {
         ProtectionLevel = protectionLevel;
 
-        var xmlToSave = new XmlDocument();
+        var xmlToSave = new XmlDocument
+        {
+            PreserveWhitespace = true
+        };
         xmlToSave.LoadXml(FileXmlDocument.OuterXml);
 
         if (!new[]

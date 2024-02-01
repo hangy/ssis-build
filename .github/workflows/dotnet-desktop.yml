@@ -25,7 +25,7 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - uses: dotnet/nbgv@v0.4.1
+      - uses: dotnet/nbgv@v0.4.2
         with:
           setAllVars: true
 

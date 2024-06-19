@@ -39,7 +39,7 @@ jobs:
         run: dotnet test $env:Solution_Name --configuration $env:Configuration --no-build
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: NuGet Package
           path: src\SsisTool\bin\${{ env.Configuration }}\*.nupkg

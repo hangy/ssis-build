@@ -5,17 +5,17 @@
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0-preview-23531-01" />
-    <PackageVersion Include="xunit" Version="2.8.0" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.4" />
-    <PackageVersion Include="coverlet.collector" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
+    <PackageVersion Include="xunit" Version="2.8.1" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.1" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="Moq" Version="4.20.70" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
-    <PackageVersion Include="Nerdbank.GitVersioning" Version="3.6.133" />
-    <PackageVersion Include="Microsoft.Data.SqlClient" Version="5.1.2" />
+    <PackageVersion Include="Nerdbank.GitVersioning" Version="3.6.139" />
+    <PackageVersion Include="Microsoft.Data.SqlClient" Version="5.2.1" />
     <PackageVersion Include="System.IO.Packaging" Version="8.0.0" />
-    <PackageVersion Include="System.Security.Cryptography.Xml" Version="8.0.0" />
+    <PackageVersion Include="System.Security.Cryptography.Xml" Version="8.0.1" />
   </ItemGroup>
 </Project>

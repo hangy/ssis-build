@@ -152,25 +152,29 @@ public class Package : ProjectFile
 
         var encryptedData = new EncryptedData();
 
-        encryptedData.LoadXml(element);
-
-
-        cryptoServiceProvider.Key = passwordDeriveBytes.CryptDeriveKey("TripleDES", "SHA1", 192,
-            cryptoServiceProvider.IV);
-
-        // weird edge case - if this is a parameter value, then it must replace one more parent level up
-        var elementToReplace = element.ParentNode?.Name == "DTS:Property" && (element.ParentNode as XmlElement) != null && element.ParentNode?.ParentNode?.Name == "DTS:PackageParameter"
-            ? (XmlElement)element.ParentNode
-            : element;
-
-        var exml = new EncryptedXml();
         try
         {
+            encryptedData.LoadXml(element);
+
+            cryptoServiceProvider.Key = passwordDeriveBytes.CryptDeriveKey("TripleDES", "SHA1", 192,
+                cryptoServiceProvider.IV);
+
+            // weird edge case - if this is a parameter value, then it must replace one more parent level up
+            var elementToReplace = element.ParentNode?.Name == "DTS:Property" && (element.ParentNode as XmlElement) != null && element.ParentNode?.ParentNode?.Name == "DTS:PackageParameter"
+                ? (XmlElement)element.ParentNode
+                : element;
+
+            var exml = new EncryptedXml();
             var output = exml.DecryptData(encryptedData, cryptoServiceProvider);
             exml.ReplaceData(elementToReplace, output);
         }
         catch (CryptographicException)
         {
+            throw new InvalidPaswordException();
+        }
+        catch (XmlException)
+        {
+            // Some framework versions throw XmlException for malformed/decryption failures — treat as bad password
             throw new InvalidPaswordException();
         }
     }
